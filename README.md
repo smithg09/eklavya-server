@@ -5,7 +5,7 @@
     <img src="nodetype.png" alt="Logo" width="250" height="100">
   </a>
 
-  <h3 align="center">Nodejs-Typescript/GraphQL/Express/MongoDB Boilerplate</h3>
+  <h3 align="center">Eklavya</h3>
 
   <p align="center">
     Eklavya Server is a REST API built using Node-Typescript/Express/MongoDB with JWT support.
