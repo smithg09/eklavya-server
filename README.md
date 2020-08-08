@@ -8,10 +8,9 @@
   <h3 align="center">Nodejs-Typescript/GraphQL/Express/MongoDB Boilerplate</h3>
 
   <p align="center">
-    Eklavya Server is a REST API built using Node-Typescript/Express/MongoDB with JWT support. This project is hosted on heroku at <a href="https://eklavya-server.herokuapp.com/API/documentation" target="_blank"> <b>eklavya-server.herokuapp.com/</b> </a>
+    Eklavya Server is a REST API built using Node-Typescript/Express/MongoDB with JWT support. This project is hosted on heroku at <a href="https://eklavya-server.herokuapp.com/API/documentation" target="_blank"> <b>eklavya-server.herokuapp.com/</b> </a>. Frontend can be found at <a href="https://github.com/jaisoneji/eklavya-client" target="_blank"> <b> https://github.com/jaisoneji/eklavya-client </b></a>
     <br />
     <br />
-    Frontend can be found at <a href="https://github.com/jaisoneji/eklavya-client" target="_blank"> <b> https://github.com/jaisoneji/eklavya-client </b></a>
     <a href="https://documenter.getpostman.com/view/9636093/T1DpDdHt?version=latest">📝 API Documentation</a>
   </p>
 </p>
