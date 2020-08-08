@@ -15,7 +15,7 @@
     Frontend can be found at <a href="https://github.com/jaisoneji/eklavya-client" target="_blank"> <b> https://github.com/jaisoneji/eklavya-client </b></a>
     <br />
     <br />
-    <a href="https://documenter.getpostman.com/view/9636093/T1DpDdHt?version=latest">📝 API Documentation</a>
+    <a href="https://documenter.getpostman.com/view/9636093/T1LJjo6Y?version=latest">📝 API Documentation</a>
   </p>
 </p>
 
