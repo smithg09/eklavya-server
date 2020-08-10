@@ -1,7 +1,10 @@
+/* eslint-disable @typescript-eslint/camelcase */
+import * as queryString from 'query-string';
 import { Service, Inject } from 'typedi';
 import jwt from 'jsonwebtoken';
 import MailerService from './mailer';
 import config from '../config';
+import axios from 'axios';
 import bcrypt from 'bcrypt';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
@@ -81,6 +84,9 @@ export default class AuthService {
     if (!userRecord) {
       throw new Error('User not registered');
     }
+    if (userRecord.method === 'OAuth2') {
+      throw new Error('Please login using Google');
+    }
     /**
      * We use verify from bcrypt to prevent 'timing based' attacks
      */
@@ -109,6 +115,77 @@ export default class AuthService {
       return { user, token };
     } else {
       throw new Error('Invalid Password');
+    }
+  }
+
+  public async GoogleSignIn(oauth_code) {
+    try {
+      if (process.env.NODE_ENV !== 'production') {
+        const urlParams = queryString.parse(oauth_code);
+        oauth_code = urlParams.code;
+      }
+      const verifiedTokens = await this.GetOAuthAccessToken(oauth_code);
+      const userData = await this.GetOAuthUserData(verifiedTokens.access_token);
+
+      const existingUser = await this.userModel.findOne({ 'OAuth2.Id': userData.id });
+      if (existingUser) {
+        this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
+        return { user: existingUser, token: verifiedTokens.id_token };
+      } else {
+        const userRecord = await this.userModel.create({
+          method: 'OAuth2',
+          OAuth2: {
+            Id: userData.id,
+            picture: userData.picture,
+          },
+          name: userData.name,
+          email: userData.email,
+        });
+
+        if (!userRecord) {
+          throw new Error('User cannot be created');
+        }
+        this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
+        return { user: userRecord, token: verifiedTokens.id_token };
+      }
+    } catch (e) {
+      console.log(e);
+      throw new Error('Error Creating OAuth2 User');
+    }
+  }
+
+  private async GetOAuthUserData(access_token) {
+    try {
+      const { data } = await axios({
+        url: 'https://www.googleapis.com/oauth2/v2/userinfo',
+        method: 'get',
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+        },
+      });
+      return data;
+    } catch (e) {
+      throw new Error('Error Getting OAuth2 User Data.');
+    }
+  }
+
+  private async GetOAuthAccessToken(Code) {
+    try {
+      const { data } = await axios({
+        url: `https://oauth2.googleapis.com/token`,
+        method: 'post',
+        data: {
+          client_id: process.env.CLIENT_ID,
+          client_secret: process.env.CLIENT_SECRET,
+          redirect_uri: 'http://localhost:3000',
+          grant_type: 'authorization_code',
+          code: Code,
+        },
+      });
+      const verifiedToken = { access_token: data.access_token, id_token: data.id_token };
+      return verifiedToken;
+    } catch (e) {
+      throw new Error('Error Getting OAuth2 Access Token.');
     }
   }
 

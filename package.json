@@ -30,6 +30,7 @@
   "dependencies": {
     "agenda": "^2.0.2",
     "agendash": "^1.0.0",
+    "axios": "^0.19.2",
     "bcrypt": "^5.0.0",
     "body-parser": "^1.18.2",
     "celebrate": "^9.1.0",
@@ -43,6 +44,7 @@
     "express-graphql": "^0.11.0",
     "express-jwt": "^6.0.0",
     "graphql": "^15.3.0",
+    "install": "^0.13.0",
     "jsonwebtoken": "^8.2.0",
     "lodash": "^4.17.19",
     "mailgun-js": "^0.22.0",
@@ -50,7 +52,10 @@
     "moment": "^2.23.0",
     "moment-timezone": "^0.5.23",
     "mongoose": "^5.7.5",
+    "mongoose-beautiful-unique-validation": "^7.1.1",
+    "mongoose-validation-error-transform": "0.0.6",
     "morgan": "^1.9.1",
+    "query-string": "^6.13.1",
     "reflect-metadata": "^0.1.12",
     "typedi": "^0.8.0",
     "winston": "^3.2.1"

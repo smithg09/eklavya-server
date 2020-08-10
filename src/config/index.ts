@@ -1,14 +1,22 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import dotenv from 'dotenv';
+import * as queryString from 'query-string';
 
 // Set the NODE_ENV to 'development' by default
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
-// if (envFound.error) {
-//   // This error should crash whole process
 
-//   throw new Error("⚠️  Couldn't find .env file  ⚠️");
-// }
+const OAuthConfig = queryString.stringify({
+  client_id: process.env.CLIENT_ID,
+  redirect_uri: 'http://localhost:3000',
+  scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
+    ' ',
+  ), // space seperated string
+  response_type: 'code',
+  access_type: 'offline',
+  prompt: 'consent',
+});
 
 export default {
   /**
@@ -61,5 +69,13 @@ export default {
   emails: {
     apiKey: process.env.MAILGUN_API_KEY,
     domain: process.env.MAILGUN_DOMAIN,
+  },
+  /**
+   * Google Login OAuth Credentials
+   */
+  OAuth2: {
+    loginUrl: `https://accounts.google.com/o/oauth2/v2/auth?${OAuthConfig}`,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
   },
 };
