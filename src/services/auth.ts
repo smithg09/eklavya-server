@@ -127,6 +127,11 @@ export default class AuthService {
       const verifiedTokens = await this.GetOAuthAccessToken(oauth_code);
       const userData = await this.GetOAuthUserData(verifiedTokens.access_token);
 
+      const checkIfLocalUserExists = await this.userModel.findOne({ email: userData.email, method: 'local' });
+      if (checkIfLocalUserExists) {
+        throw new Error('Local User Exists Error');
+      }
+
       const existingUser = await this.userModel.findOne({ 'OAuth2.Id': userData.id });
       if (existingUser) {
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
@@ -149,8 +154,12 @@ export default class AuthService {
         return { user: userRecord, token: verifiedTokens.id_token };
       }
     } catch (e) {
-      console.log(e);
+      // console.log(e);
+      // if (e.split(' ').includes('Local', 'User', 'Exists')) {
+      //   throw new Error('You are not registered using google, Please login using password!');
+      // } else {
       throw new Error('Error Creating OAuth2 User');
+      // }
     }
   }
 
