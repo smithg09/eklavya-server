@@ -9,7 +9,7 @@ const envFound = dotenv.config();
 
 const OAuthConfig = queryString.stringify({
   client_id: process.env.CLIENT_ID,
-  redirect_uri: 'http://localhost:8080/#/GoogleLoader',
+  redirect_uri: 'http://localhost:8080',
   scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
     ' ',
   ), // space seperated string
