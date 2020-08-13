@@ -134,8 +134,14 @@ export default class AuthService {
 
       const existingUser = await this.userModel.findOne({ 'OAuth2.Id': userData.id });
       if (existingUser) {
+        const transformUserRecord = {
+          name: existingUser.name,
+          email: existingUser.email,
+          image: existingUser.OAuth2.picture,
+          lastlogin: existingUser.lastLogin,
+        };
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
-        return { user: existingUser, token: verifiedTokens.id_token };
+        return { user: transformUserRecord, token: verifiedTokens.id_token };
       } else {
         const userRecord = await this.userModel.create({
           method: 'OAuth2',
