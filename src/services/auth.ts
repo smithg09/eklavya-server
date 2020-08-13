@@ -151,7 +151,14 @@ export default class AuthService {
           throw new Error('User cannot be created');
         }
         this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
-        return { user: userRecord, token: verifiedTokens.id_token };
+
+        const transformUserRecord = {
+          name: userRecord.name,
+          email: userRecord.email,
+          image: userRecord.OAuth2.picture,
+          lastlogin: userRecord.lastLogin,
+        };
+        return { user: transformUserRecord, token: verifiedTokens.id_token };
       }
     } catch (e) {
       // if (e.split(' ').includes('Local', 'User', 'Exists')) {
