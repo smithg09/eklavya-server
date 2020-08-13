@@ -120,10 +120,10 @@ export default class AuthService {
 
   public async GoogleSignIn(oauth_code) {
     try {
-      if (process.env.NODE_ENV !== 'production') {
-        const urlParams = queryString.parse(oauth_code);
-        oauth_code = urlParams.code;
-      }
+      // if (process.env.NODE_ENV !== 'production') {
+      //   const urlParams = queryString.parse(oauth_code);
+      //   oauth_code = urlParams.code;
+      // }
       const verifiedTokens = await this.GetOAuthAccessToken(oauth_code);
       const userData = await this.GetOAuthUserData(verifiedTokens.access_token);
 
@@ -191,7 +191,6 @@ export default class AuthService {
         },
       });
       const verifiedToken = { access_token: data.access_token, id_token: data.id_token };
-      console.log(verifiedToken);
       return verifiedToken;
     } catch (e) {
       throw new Error('Error Getting OAuth2 Access Token.');
