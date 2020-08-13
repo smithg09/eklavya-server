@@ -154,7 +154,6 @@ export default class AuthService {
         return { user: userRecord, token: verifiedTokens.id_token };
       }
     } catch (e) {
-      // console.log(e);
       // if (e.split(' ').includes('Local', 'User', 'Exists')) {
       //   throw new Error('You are not registered using google, Please login using password!');
       // } else {
@@ -186,12 +185,13 @@ export default class AuthService {
         data: {
           client_id: process.env.CLIENT_ID,
           client_secret: process.env.CLIENT_SECRET,
-          redirect_uri: 'http://localhost:3000',
+          redirect_uri: 'http://localhost:8080/GoogleLoader',
           grant_type: 'authorization_code',
           code: Code,
         },
       });
       const verifiedToken = { access_token: data.access_token, id_token: data.id_token };
+      console.log(verifiedToken);
       return verifiedToken;
     } catch (e) {
       throw new Error('Error Getting OAuth2 Access Token.');
