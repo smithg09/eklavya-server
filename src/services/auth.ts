@@ -156,6 +156,7 @@ export default class AuthService {
         if (!userRecord) {
           throw new Error('User cannot be created');
         }
+        await this.mailer.SendWelcomeEmail(userRecord.email);
         this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
         const transformUserRecord = {
