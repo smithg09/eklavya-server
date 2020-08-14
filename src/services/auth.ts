@@ -166,6 +166,8 @@ export default class AuthService {
           name: userRecord.name,
           email: userRecord.email,
           image: userRecord.OAuth2.picture,
+          role: userRecord.role,
+          method: userRecord.method,
           lastlogin: userRecord.lastLogin,
         };
         return { user: transformUserRecord, token: verifiedTokens.id_token };
