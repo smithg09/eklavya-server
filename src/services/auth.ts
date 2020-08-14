@@ -9,6 +9,7 @@ import bcrypt from 'bcrypt';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
+import { transformUserData } from '../helpers/transformUserData';
 
 @Service()
 export default class AuthService {
@@ -134,12 +135,7 @@ export default class AuthService {
 
       const existingUser = await this.userModel.findOne({ 'OAuth2.Id': userData.id });
       if (existingUser) {
-        const transformUserRecord = {
-          name: existingUser.name,
-          email: existingUser.email,
-          image: existingUser.OAuth2.picture,
-          lastlogin: existingUser.lastLogin,
-        };
+        const transformUserRecord = transformUserData(existingUser);
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
         return { user: transformUserRecord, token: verifiedTokens.id_token };
       } else {
@@ -162,14 +158,7 @@ export default class AuthService {
         await this.mailer.SendWelcomeEmail(userRecord.email);
         this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
-        const transformUserRecord = {
-          name: userRecord.name,
-          email: userRecord.email,
-          image: userRecord.OAuth2.picture,
-          role: userRecord.role,
-          method: userRecord.method,
-          lastlogin: userRecord.lastLogin,
-        };
+        const transformUserRecord = transformUserData(userRecord);
         return { user: transformUserRecord, token: verifiedTokens.id_token };
       }
     } catch (e) {

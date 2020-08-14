@@ -6,6 +6,7 @@ import { IUserInputDTO } from '../../interfaces/IUser';
 import middlewares from '../middlewares';
 import { celebrate, Joi } from 'celebrate';
 import { Logger } from 'winston';
+import { transformUserData } from '../../helpers/transformUserData';
 
 const route = Router();
 
@@ -28,7 +29,8 @@ export default (app: Router) => {
       try {
         const authServiceInstance = Container.get(AuthService);
         const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
-        return res.status(201).json({ user, token });
+        const transformedUserData = transformUserData(user);
+        return res.status(201).json({ user: transformedUserData, token });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -51,7 +53,8 @@ export default (app: Router) => {
         const { email, password } = req.body;
         const authServiceInstance = Container.get(AuthService);
         const { user, token } = await authServiceInstance.SignIn(email, password);
-        return res.json({ user, token }).status(200);
+        const transformedUserData = transformUserData(user);
+        return res.status(201).json({ user: transformedUserData, token });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
