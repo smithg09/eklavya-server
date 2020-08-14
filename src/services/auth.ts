@@ -167,11 +167,11 @@ export default class AuthService {
         return { user: transformUserRecord, token: verifiedTokens.id_token };
       }
     } catch (e) {
-      // if (e.split(' ').includes('Local', 'User', 'Exists')) {
-      //   throw new Error('You are not registered using google, Please login using password!');
-      // } else {
-      throw new Error('Error Creating OAuth2 User');
-      // }
+      if (e.message.split(' ').includes('Local', 'User', 'Exists')) {
+        throw new Error('You are not registered using google, Please login using password!');
+      } else {
+        throw new Error('Error Creating OAuth2 User');
+      }
     }
   }
 
