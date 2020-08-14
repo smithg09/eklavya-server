@@ -143,6 +143,8 @@ export default class AuthService {
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
         return { user: transformUserRecord, token: verifiedTokens.id_token };
       } else {
+        const emailCheckRegex = /(^\D[A-Za-z0-9\.]+@ves.ac.in)/;
+        const checkIfFacultyMail = emailCheckRegex.test(userData.email);
         const userRecord = await this.userModel.create({
           method: 'OAuth2',
           OAuth2: {
@@ -151,6 +153,7 @@ export default class AuthService {
           },
           name: userData.name,
           email: userData.email,
+          role: checkIfFacultyMail ? 'faculty' : 'student',
         });
 
         if (!userRecord) {
