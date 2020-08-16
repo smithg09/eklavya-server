@@ -22,6 +22,7 @@ export const graphQlSchema = buildSchema(`
             password: String!
             salt: String!
             role: String!
+            verified: Boolean
             lastLogin: Date
             createdAt: Date
             updatedAt: Date

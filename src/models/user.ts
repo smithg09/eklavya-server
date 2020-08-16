@@ -39,6 +39,10 @@ const User = new mongoose.Schema(
       default: 'user',
     },
 
+    verified: {
+      type: Boolean,
+      default: false,
+    },
     lastLogin: {
       type: Date,
       default: null,

@@ -12,6 +12,7 @@ export interface IUser {
   password: string;
   salt: string;
   role: string;
+  verified: boolean;
   lastLogin: Date;
 }
 

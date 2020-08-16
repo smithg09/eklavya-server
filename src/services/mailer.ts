@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/camelcase */
 import { Container } from 'typedi';
 import { Service, Inject } from 'typedi';
 import { IUser } from '../interfaces/IUser';
@@ -11,7 +12,6 @@ export default class MailerService {
   }
 
   public async SendWelcomeEmail(email) {
-
     /**
      * @TODO Call Mailchimp/Sendgrid or whatever
      */
@@ -24,6 +24,22 @@ export default class MailerService {
       text: 'Testing some Mailgun awesomness!',
     };
 
+    this.emailClient.messages().send(data);
+    return { delivered: 1, status: 'ok' };
+  }
+
+  public async SendVerficationEmail(userDetails, token) {
+    this.Logger.debug(`🔥Sending Verification mail to %o`, userDetails.email);
+    const hostUrl = process.env.HOST_URL;
+    const verificationUrl = `${hostUrl}/API/auth/verify?token=${token}`;
+    const data = {
+      from: 'Team Eklavya <eklavya@mailgun.org>',
+      to: userDetails.email,
+      subject: 'Please Verify your Email address',
+      template: 'mailverification01',
+      'v:name': userDetails.name,
+      'v:verification_link': verificationUrl,
+    };
     this.emailClient.messages().send(data);
     return { delivered: 1, status: 'ok' };
   }

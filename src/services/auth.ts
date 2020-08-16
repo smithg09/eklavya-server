@@ -60,8 +60,7 @@ export default class AuthService {
         throw new Error('User cannot be created');
       }
       this.logger.silly('Sending welcome email');
-      await this.mailer.SendWelcomeEmail(userRecord.email);
-
+      await this.mailer.SendVerficationEmail(userRecord, token);
       this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
       /**
@@ -87,6 +86,9 @@ export default class AuthService {
     }
     if (userRecord.method === 'OAuth2') {
       throw new Error('Please login using Google');
+    }
+    if (!userRecord.verified) {
+      throw new Error('Please Verify your email address');
     }
     /**
      * We use verify from bcrypt to prevent 'timing based' attacks
@@ -149,6 +151,7 @@ export default class AuthService {
           },
           name: userData.name,
           email: userData.email,
+          verified: userData.verified_email,
           role: checkIfFacultyMail ? 'faculty' : 'student',
         });
 

@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
+import mongoose from 'mongoose';
+import { IUser } from '../../interfaces/IUser';
 import config from '../../config';
 import AuthService from '../../services/auth';
 import { IUserInputDTO } from '../../interfaces/IUser';
@@ -7,6 +9,7 @@ import middlewares from '../middlewares';
 import { celebrate, Joi } from 'celebrate';
 import { Logger } from 'winston';
 import { transformUserData } from '../../helpers/transformUserData';
+import jwt from 'jsonwebtoken';
 
 const route = Router();
 
@@ -85,6 +88,24 @@ export default (app: Router) => {
     logger.debug('Getting OAuth2 Login URL');
     try {
       res.json({ OAuth2URL: config.OAuth2.loginUrl });
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+
+  route.get('/verify', async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Verifying Email address token');
+    try {
+      const isVerified = await jwt.verify(req.query.token, config.jwtSecret);
+      if (isVerified) {
+        const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
+        await UserModel.updateOne({ _id: isVerified._id }, { $set: { verified: true } });
+        res.redirect('https://eklavya-client.netlify.app/');
+      } else {
+        throw new Error('Invalid Token');
+      }
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);
