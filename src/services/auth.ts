@@ -193,7 +193,7 @@ export default class AuthService {
         data: {
           client_id: process.env.CLIENT_ID,
           client_secret: process.env.CLIENT_SECRET,
-          redirect_uri: 'http://localhost:8080/GoogleLoader',
+          redirect_uri: 'https://eklavya-client.netlify.app/Dashboard',
           grant_type: 'authorization_code',
           code: Code,
         },
