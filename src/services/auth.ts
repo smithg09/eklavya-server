@@ -193,7 +193,10 @@ export default class AuthService {
         data: {
           client_id: process.env.CLIENT_ID,
           client_secret: process.env.CLIENT_SECRET,
-          redirect_uri: 'https://eklavya-client.netlify.app/Dashboard',
+          /**
+           * `postmessage` is magic value for redirect_uri to get credentials without actual redirect uri.
+           */
+          redirect_uri: 'postmessage',
           grant_type: 'authorization_code',
           code: Code,
         },
