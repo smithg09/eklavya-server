@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 import ScrapperService from '../../services/scrapper';
-// import middlewares from '../middlewares';
+import RepositoryService from '../../services/repository';
 import { celebrate, Joi } from 'celebrate';
 import { Logger } from 'winston';
 import { title } from 'process';
@@ -23,7 +23,9 @@ export default (app: Router) => {
       logger.debug('Scrapping quiz data from : %o', req.body.scrapeURL);
       try {
         const scrapeServiceInstance = Container.get(ScrapperService);
+        const repositoryServiceInstance = Container.get(RepositoryService);
         const data = await scrapeServiceInstance.scrape(req.body.scrapeURL);
+        await repositoryServiceInstance.Store(data);
         res.status(200).json({
           title: data.title,
           scrappedURL: req.body.scrapeURL,

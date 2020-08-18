@@ -91,7 +91,7 @@ export default class ScrapperService {
             .text()
             .split('\n')
             .slice(0, 1)[0]
-            .replace(' Answer: ', ''),
+            .replace('Answer: ', ''),
         );
       });
 
