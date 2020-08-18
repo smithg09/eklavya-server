@@ -28,7 +28,7 @@ export default ({ app }: { app: express.Application }) => {
   // "Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it."
   // Maybe not needed anymore ?
   app.use(require('method-override')());
-
+  app.use('/static', express.static('src/public'));
   // Middleware that transforms the raw string of req.body into json
   app.use(bodyParser.json());
   // Load API routes
