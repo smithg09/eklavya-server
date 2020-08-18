@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import auth from './routes/auth';
+import scrape from './routes/scrape';
 import agendash from './routes/agendash';
 import graphQL from './graphql';
 
@@ -7,6 +8,7 @@ import graphQL from './graphql';
 export default () => {
   const app = Router();
   auth(app);
+  scrape(app);
   graphQL(app);
   agendash(app);
 

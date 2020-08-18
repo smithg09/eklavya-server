@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import * as queryString from 'query-string';
 import { Service, Inject } from 'typedi';
 import jwt from 'jsonwebtoken';
 import MailerService from './mailer';
