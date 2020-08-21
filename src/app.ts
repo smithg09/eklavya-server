@@ -3,10 +3,10 @@ import config from './config';
 import express from 'express';
 import Logger from './loaders/logger';
 
-class Server {
-  private app: express.Application;
+class BootstrapApp {
+  private appModule: express.Application;
   constructor() {
-    this.app = express();
+    this.appModule = express();
     /**
      * A little hack here
      * Async/Await cannot used in Class methods
@@ -18,13 +18,13 @@ class Server {
        * Import/Export can only be used in 'top-level code'
        * So using good old require statements.
        **/
-      resolve(require('./loaders').default({ expressApp: this.app }));
+      resolve(require('./loaders').default({ expressApp: this.appModule }));
     }).then(() => {
-      this.startServer(this.app);
+      this.createServer(this.appModule);
     });
   }
 
-  private startServer(app: express.Application) {
+  private createServer(app: express.Application) {
     app.listen(config.port, err => {
       if (err) {
         Logger.error(err);
@@ -40,4 +40,4 @@ class Server {
     });
   }
 }
-new Server();
+new BootstrapApp();
