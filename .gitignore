@@ -5,6 +5,7 @@
 # misc
 .DS_Store
 .env*
+request.http
 
 npm-debug.log*
 yarn-debug.log*

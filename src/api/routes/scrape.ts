@@ -4,7 +4,6 @@ import ScrapperService from '../../services/scrapper';
 import RepositoryService from '../../services/repository';
 import { celebrate, Joi } from 'celebrate';
 import { Logger } from 'winston';
-import { title } from 'process';
 
 const route = Router();
 
@@ -22,6 +21,12 @@ export default (app: Router) => {
       const logger: Logger = Container.get('logger');
       logger.debug('Scrapping quiz data from : %o', req.body.scrapeURL);
       try {
+        /**
+         * 1. Okay! so here we are getting instance of scrapper and repository service.
+         * 2. @function Scrape: Scrapping Website @returns quiz data.
+         * 3. @function Store: Saving Scrapped data to @DB Repository.
+         */
+
         const scrapeServiceInstance = Container.get(ScrapperService);
         const repositoryServiceInstance = Container.get(RepositoryService);
         const data = await scrapeServiceInstance.scrape(req.body.scrapeURL);
