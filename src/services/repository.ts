@@ -141,20 +141,21 @@ export default class RepositoryService {
     @EventDispatcher() private eventDispatcher: EventDispatcherInterface,
   ) {}
 
-  public async Store(repositoryInputDTO) {
+  public async Store(repositoryInputDTO, sourceURL) {
     try {
       this.logger.silly('Saving Quiz Data..');
       const keywords = repositoryInputDTO.title
         .replace('-', '')
         .split(' ')
         .filter(el => {
-          return el != '' && el.length > 1 && !this.stopwords.includes(el);
+          return el != '' && !this.stopwords.includes(el);
         });
 
       const transformedRepository = repositoryInputDTO.ScrappedQuiz.map(el => {
         return {
           title: repositoryInputDTO.title,
           keywords,
+          source: sourceURL,
           question: el.question,
           options: el.options,
           answer: el.answer,

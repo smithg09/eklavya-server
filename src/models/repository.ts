@@ -18,6 +18,12 @@ const Repository = new mongoose.Schema(
       required: true,
     },
 
+    source: {
+      type: String,
+      required: true,
+      index: true,
+    },
+
     question: {
       type: [String],
       unique: true,
