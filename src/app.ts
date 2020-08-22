@@ -32,10 +32,10 @@ class BootstrapApp {
         return;
       }
       Logger.info(`
-          ################################################
-          🛡️  Server listening on port: ${config.port} 🛡️
-          🌐 http://localhost:${config.port}
-          ################################################
+           ********************************
+           * 🛡️  Server listening on: ${config.port} *
+           * 🌐 http://localhost:${config.port}     *
+           ********************************
         `);
     });
   }
