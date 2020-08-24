@@ -49,7 +49,7 @@ export default class ScrapperService {
           .each(function(i, el) {
             var opSingleTemp = $(el)
               .find('td:nth-last-child(1)')
-              .text();
+              .html();
             optemp.push(opSingleTemp);
           })
           .text();
