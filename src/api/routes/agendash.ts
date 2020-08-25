@@ -4,6 +4,7 @@ import agendash from 'agendash';
 import { Container } from 'typedi';
 import config from '../../config';
 import Agenda from 'agenda';
+import middleware from '../middlewares';
 
 export default (app: Router) => {
   const agendaInstance: Agenda = Container.get('agendaInstance');
@@ -19,8 +20,8 @@ export default (app: Router) => {
     agendash(agendaInstance),
   );
 
-  app.use('/scheduleMail', async (req, res) => {
-    agendaInstance.define('print', async job => {
+  app.use('/scheduleMail', middleware.isAuth, middleware.attachCurrentUser, async (req, res) => {
+    agendaInstance.define('print', async _job => {
       console.log('I print a report!');
     });
     agendaInstance.schedule('2020-08-01T10:15', 'print');
