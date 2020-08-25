@@ -66,8 +66,8 @@ export default (app: Router) => {
   );
 
   /**
-   * Google Sign In Route using OAuth2
-   * @TODO Verifing OAuth id JWT token from OAuth endpoint (i.e https://developers.google.com/identity/sign-in/web/backend-auth)
+   * * Google Sign In Route using OAuth2
+   * TODO Verifing OAuth id JWT token from OAuth endpoint (i.e https://developers.google.com/identity/sign-in/web/backend-auth)
    */
 
   route.post('/oauth/google', async (req: Request, res: Response, next: NextFunction) => {
@@ -77,17 +77,6 @@ export default (app: Router) => {
       const authServiceInstance = Container.get(AuthService);
       const { user, token } = await authServiceInstance.GoogleSignIn(req.body.oauth_code);
       res.json({ user, token }).status(200);
-    } catch (e) {
-      logger.error('🔥 error: %o', e);
-      return next(e);
-    }
-  });
-
-  route.get('/get-OAuth2-url', (req: Request, res: Response, next: NextFunction) => {
-    const logger: Logger = Container.get('logger');
-    logger.debug('Getting OAuth2 Login URL');
-    try {
-      res.json({ OAuth2URL: config.OAuth2.loginUrl });
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);

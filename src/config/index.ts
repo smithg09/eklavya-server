@@ -7,17 +7,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 
 const envFound = dotenv.config();
 
-const OAuthConfig = queryString.stringify({
-  client_id: process.env.CLIENT_ID,
-  redirect_uri: 'postmessage',
-  scope: ['https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/userinfo.profile'].join(
-    ' ',
-  ), // space seperated string
-  response_type: 'code',
-  access_type: 'offline',
-  prompt: 'consent',
-});
-
 export default {
   /**
    * Your favorite port
@@ -74,7 +63,6 @@ export default {
    * Google Login OAuth Credentials
    */
   OAuth2: {
-    loginUrl: `https://accounts.google.com/o/oauth2/v2/auth?${OAuthConfig}`,
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
   },
