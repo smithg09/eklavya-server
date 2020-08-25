@@ -3,12 +3,18 @@ import { Container } from 'typedi';
 import ScrapperService from '../../services/scrapper';
 import RepositoryService from '../../services/repository';
 import { celebrate, Joi } from 'celebrate';
+import middlewares from '../middlewares';
 import { Logger } from 'winston';
 
 const route = Router();
 
 export default (app: Router) => {
-  app.use('/scrape', route);
+  /**
+   * * Scraper Handler..
+   * ! Protected route `Authorization` header must be sent with Bearer TOKEN
+   * @param scrapeURL: URL of the website to scrape.
+   */
+  app.use('/scrape', middlewares.isAuth, middlewares.attachCurrentUser, route);
 
   route.get(
     '/',

@@ -3,13 +3,20 @@ import { Container } from 'typedi';
 // import RepositoryService from '../../services/repository';
 import mongoose from 'mongoose';
 import { IRepository } from '../../interfaces/IRepository';
-
+import middlewares from '../middlewares';
 import { Logger } from 'winston';
 
 const route = Router();
 
 export default (app: Router) => {
-  app.use('/repositoryData', route);
+  /**
+   * * ALl Repository Methods Handler..
+   *
+   * ! Protected route `Authorization` header must be sent with Bearer TOKEN
+   *
+   * TODO Filter: create a route for filtering repository data into various options like subjects , topics , specific keywords etc..
+   */
+  app.use('/repositoryData', middlewares.isAuth, middlewares.attachCurrentUser, route);
 
   route.get('/all', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
