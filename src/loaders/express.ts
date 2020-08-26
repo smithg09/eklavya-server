@@ -15,6 +15,17 @@ export default ({ app }: { app: express.Application }) => {
     res.status(200).end();
   });
 
+  app.use('*', (_req, res, next) => {
+    const origin = _req.headers.origin;
+    console.log(origin);
+    const HOST_REGEX = /((app.eklavya.tech){1})/;
+    if (HOST_REGEX.test(origin) || origin == undefined) {
+      next();
+    } else {
+      // throw new Error('UnauthorizedError');
+      res.status(401).json({ warning: 'Unauthorized Access', iptrace: _req.connection.remoteAddress });
+    }
+  });
   // Useful if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   // It shows the real origin IP in the heroku or Cloudwatch logs
   app.enable('trust proxy');

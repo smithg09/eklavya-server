@@ -16,7 +16,6 @@ export default () => {
 
   // Request to check if server running
   app.get('/ping', (_req: Request, _res: Response) => {
-    console.log(_req.headers.origin);
     _res.status(200).json({
       status: 200,
       message: 'Server Connected',
