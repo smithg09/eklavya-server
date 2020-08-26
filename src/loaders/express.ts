@@ -23,8 +23,6 @@ export default ({ app }: { app: express.Application }) => {
 
   app.use('*', (_req, res, next) => {
     const origin = _req.headers.origin;
-    console.log(origin);
-
     if (origin == undefined || origin.includes('eklavya')) {
       next();
     } else {
