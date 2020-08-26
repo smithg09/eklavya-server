@@ -15,11 +15,17 @@ export default ({ app }: { app: express.Application }) => {
     res.status(200).end();
   });
 
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech/'); // update to match the domain you will make the request from
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+  });
+
   app.use('*', (_req, res, next) => {
     const origin = _req.headers.origin;
     console.log(origin);
-    const HOST_REGEX = /((app.eklavya.tech){1})/;
-    if (HOST_REGEX.test(origin) || origin == undefined) {
+
+    if (origin == undefined || origin.includes('eklavya')) {
       next();
     } else {
       // throw new Error('UnauthorizedError');
