@@ -18,6 +18,7 @@ export default (app: Router) => {
    */
   app.use('/repositoryData', middlewares.isAuth, middlewares.attachCurrentUser, route);
 
+
   route.get('/all', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Getting Repository Data');
