@@ -4,7 +4,7 @@
   "description": "Bulletproof node.js",
   "main": "src/app.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "heroku-postbuild": "npm run build",
     "start": "nodemon",
     "inspect": "nodemon --inspect src/app.ts",
@@ -28,6 +28,7 @@
   "author": "Smith Gajjar",
   "license": "MIT",
   "dependencies": {
+    "@types/gapi.auth2": "0.0.52",
     "agenda": "^2.0.2",
     "agendash": "^1.0.0",
     "axios": "^0.19.2",
