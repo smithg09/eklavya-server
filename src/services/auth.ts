@@ -141,7 +141,7 @@ export default class AuthService {
       if (existingUser) {
         const transformUserRecord = transformUserData(existingUser);
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
-        return { user: transformUserRecord, token: verifiedTokens.id_token };
+        return { user: transformUserRecord, access_token: verifiedTokens.access_token, token: verifiedTokens.id_token };
       } else {
         const emailCheckRegex = /(^\D[A-Za-z0-9\.]+@ves.ac.in)/;
         const checkIfFacultyMail = emailCheckRegex.test(userData.email);

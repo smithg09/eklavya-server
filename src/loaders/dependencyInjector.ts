@@ -12,6 +12,8 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     });
 
     const agendaInstance: Agenda = agendaFactory({ mongoConnection });
+    Container.set('googleapis', require('googleapis'));
+    LoggerInstance.info('✌️ GoogleApis injected into container');
     Container.set('agendaInstance', agendaInstance);
     Container.set('logger', LoggerInstance);
     Container.set('emailClient', mailgun({ apiKey: config.emails.apiKey, domain: config.emails.domain }));

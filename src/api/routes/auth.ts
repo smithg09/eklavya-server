@@ -78,6 +78,7 @@ export default (app: Router) => {
       const authServiceInstance = Container.get(AuthService);
       // eslint-disable-next-line @typescript-eslint/camelcase
       const { user, access_token, token } = await authServiceInstance.GoogleSignIn(req.body.oauth_code);
+      console.log(access_token);
       // eslint-disable-next-line @typescript-eslint/camelcase
       res.json({ user, access_token, token }).status(200);
     } catch (e) {
