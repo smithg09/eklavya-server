@@ -4,8 +4,6 @@ import agendaFactory from './agenda';
 import config from '../config';
 import mailgun from 'mailgun-js';
 import Agenda from 'agenda';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const { google } = require('googleapis');
 
 export default ({ mongoConnection, models }: { mongoConnection; models: { name: string; model: any }[] }) => {
   try {
@@ -14,7 +12,6 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     });
 
     const agendaInstance: Agenda = agendaFactory({ mongoConnection });
-    Container.set('googleapis', google);
     LoggerInstance.info('✌️ GoogleApis loaded');
     Container.set('agendaInstance', agendaInstance);
     Container.set('logger', LoggerInstance);

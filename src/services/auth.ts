@@ -5,14 +5,13 @@ import MailerService from './mailer';
 import config from '../config';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
-import { Container } from 'typedi';
+// import { Container } from 'typedi';
+import { Auth } from 'googleapis';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
 import { transformUserData } from '../helpers/transformUserData';
-import { reject } from 'lodash';
-import { GoogleApis } from 'googleapis';
-
+// import { reject } from 'lodash';
 @Service()
 export default class AuthService {
   constructor(
@@ -176,31 +175,32 @@ export default class AuthService {
   }
 
   public async getAccess(code) {
-    const googleApiInstance: GoogleApis = Container.get('googleapis');
-    const auth = new googleApiInstance.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
+    const auth = new Auth.OAuth2Client(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
     // const token = await this.GetOAuthAccessToken(code);
     await auth.setCredentials({
       access_token:
         'ya29.a0AfH6SMD-nZfPxhj5iCP7RmXRLo5rkIIvKCrLSSlY9gy3nV6GrJbEq-5F_bItPDbM2Nl-xxA5jxoH4-nDiiLo1UA2UrNl5TgnQmqzvPiYcLA3pN97kDVxr5mKV5WXaaym7RzG5vNK3yETU4J022t7JYDQq3ESfdOk_LM',
       id_token: code,
     });
-    const classroom = await googleApiInstance.classroom({ version: 'v1', auth });
-    return new Promise(resolve => {
-      classroom.courses.list(
-        {
-          pageSize: 10,
-        },
-        (err, res) => {
-          if (err) return console.error('The API returned an error: ' + err);
-          const courses = res.data.courses;
-          if (courses && courses.length) {
-            resolve(courses);
-          } else {
-            reject({ message: 'No courses found.' });
-          }
-        },
-      );
-    });
+    console.log(auth);
+    return auth;
+    // const classroom = await googleApiInstance.classroom({ version: 'v1', auth });
+    // return new Promise(resolve => {
+    //   classroom.courses.list(
+    //     {
+    //       pageSize: 10,
+    //     },
+    //     (err, res) => {
+    //       if (err) return console.error('The API returned an error: ' + err);
+    //       const courses = res.data.courses;
+    //       if (courses && courses.length) {
+    //         resolve(courses);
+    //       } else {
+    //         reject({ message: 'No courses found.' });
+    //       }
+    //     },
+    //   );
+    // });
   }
 
   private async GetOAuthUserData(access_token) {
