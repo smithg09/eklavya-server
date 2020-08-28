@@ -5,7 +5,8 @@ import MailerService from './mailer';
 import config from '../config';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
-import { google } from 'googleapis';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const google = require('googleapis');
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
