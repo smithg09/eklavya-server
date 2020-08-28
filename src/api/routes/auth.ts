@@ -1,15 +1,16 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import { Container } from 'typedi';
 import mongoose from 'mongoose';
+import axios from 'axios';
+import { celebrate, Joi } from 'celebrate';
+import { Logger } from 'winston';
+import jwt from 'jsonwebtoken';
+import { Container } from 'typedi';
 import { IUser } from '../../interfaces/IUser';
 import config from '../../config';
 import AuthService from '../../services/auth';
 import { IUserInputDTO } from '../../interfaces/IUser';
 import middlewares from '../middlewares';
-import { celebrate, Joi } from 'celebrate';
-import { Logger } from 'winston';
 import { transformUserData } from '../../helpers/transformUserData';
-import jwt from 'jsonwebtoken';
 
 const route = Router();
 
@@ -75,8 +76,24 @@ export default (app: Router) => {
     logger.debug('Calling OAuth Sign-In endpoint');
     try {
       const authServiceInstance = Container.get(AuthService);
-      const { user, token } = await authServiceInstance.GoogleSignIn(req.body.oauth_code);
-      res.json({ user, token }).status(200);
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const { user, access_token, token } = await authServiceInstance.GoogleSignIn(req.body.oauth_code);
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      res.json({ user, access_token, token }).status(200);
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+
+  route.post('/classroom', async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Calling OAuth Sign-In endpoint');
+    try {
+      const authServiceInstance = Container.get(AuthService);
+      const data = await authServiceInstance.getAccess(req.body.oauth_code);
+      console.log(data)
+      res.json(data).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);
@@ -92,6 +109,27 @@ export default (app: Router) => {
         const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
         await UserModel.updateOne({ _id: isVerified._id }, { $set: { verified: true } });
         res.redirect('https://eklavya-client.netlify.app/');
+      } else {
+        throw new Error('Invalid Token');
+      }
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+
+  route.get('/verify_oauth2', async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Verifying OAuth2 token');
+    try {
+      const { data } = await axios({
+        url: `https://oauth2.googleapis.com/tokeninfo?id_token=${req.query.id_token}`,
+        method: 'get',
+      }).catch(_e => {
+        throw new Error('Invalid OAuth2 Token');
+      });
+      if (data) {
+        res.status(200).json(data);
       } else {
         throw new Error('Invalid Token');
       }

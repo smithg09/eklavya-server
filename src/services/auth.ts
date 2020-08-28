@@ -5,10 +5,12 @@ import MailerService from './mailer';
 import config from '../config';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
+import { google } from 'googleapis';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
 import { transformUserData } from '../helpers/transformUserData';
+import { reject } from 'lodash';
 
 @Service()
 export default class AuthService {
@@ -161,7 +163,7 @@ export default class AuthService {
         this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
         const transformUserRecord = transformUserData(userRecord);
-        return { user: transformUserRecord, token: verifiedTokens.id_token };
+        return { user: transformUserRecord, access_token: verifiedTokens.access_token, token: verifiedTokens.id_token };
       }
     } catch (e) {
       if (e.message.split(' ').includes('Local', 'User', 'Exists')) {
@@ -170,6 +172,33 @@ export default class AuthService {
         throw new Error('Error Creating OAuth2 User');
       }
     }
+  }
+
+  public async getAccess(code) {
+    const auth = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
+    // const token = await this.GetOAuthAccessToken(code);
+    await auth.setCredentials({
+      access_token:
+        'ya29.a0AfH6SMD7_TMwC3eNcaOJORaqp0fo8kxIq6fp1r-JSux8W4zWJyeG2vGyiULM12X68XulZ64k7hm5t34vy7sXmd42vW88IEjTaPQMxYmELk_XFh2kIdJO1lMUd3cZlbI-ZuKhCJDzFMLVZBvcH-a29zuZBof5q7W0zR0',
+      id_token: code,
+    });
+    const classroom = await google.classroom({ version: 'v1', auth });
+    return new Promise(resolve => {
+      classroom.courses.list(
+        {
+          pageSize: 10,
+        },
+        (err, res) => {
+          if (err) return console.error('The API returned an error: ' + err);
+          const courses = res.data.courses;
+          if (courses && courses.length) {
+            resolve(courses);
+          } else {
+            reject({ message: 'No courses found.' });
+          }
+        },
+      );
+    });
   }
 
   private async GetOAuthUserData(access_token) {
