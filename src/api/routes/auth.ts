@@ -92,7 +92,7 @@ export default (app: Router) => {
     logger.debug('Calling OAuth Sign-In endpoint');
     try {
       const authServiceInstance = Container.get(AuthService);
-      const data = await authServiceInstance.getAccess(req.body.oauth_code);
+      const data = await authServiceInstance.getAccess(req.body.access_token, req.body.id_token);
       res.json(data).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);

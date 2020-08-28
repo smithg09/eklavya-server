@@ -175,14 +175,13 @@ export default class AuthService {
     }
   }
 
-  public async getAccess(code) {
+  public async getAccess(access_token,id_token) {
     const googleApiInstance: GoogleApis = Container.get('googleapis');
     const auth = new googleApiInstance.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
     // const token = await this.GetOAuthAccessToken(code);
     await auth.setCredentials({
-      access_token:
-        'ya29.a0AfH6SMD-nZfPxhj5iCP7RmXRLo5rkIIvKCrLSSlY9gy3nV6GrJbEq-5F_bItPDbM2Nl-xxA5jxoH4-nDiiLo1UA2UrNl5TgnQmqzvPiYcLA3pN97kDVxr5mKV5WXaaym7RzG5vNK3yETU4J022t7JYDQq3ESfdOk_LM',
-      id_token: code,
+      access_token,
+      id_token,
     });
     const classroom = await googleApiInstance.classroom({ version: 'v1', auth });
     return new Promise(resolve => {
