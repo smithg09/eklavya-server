@@ -93,7 +93,6 @@ export default (app: Router) => {
     try {
       const authServiceInstance = Container.get(AuthService);
       const data = await authServiceInstance.getAccess(req.body.oauth_code);
-      console.log(data)
       res.json(data).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);

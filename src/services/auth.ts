@@ -5,13 +5,13 @@ import MailerService from './mailer';
 import config from '../config';
 import axios from 'axios';
 import bcrypt from 'bcrypt';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const google = require('googleapis');
+import { Container } from 'typedi';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
 import { transformUserData } from '../helpers/transformUserData';
 import { reject } from 'lodash';
+import { GoogleApis } from 'googleapis';
 
 @Service()
 export default class AuthService {
@@ -176,14 +176,15 @@ export default class AuthService {
   }
 
   public async getAccess(code) {
-    const auth = new google.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
+    const googleApiInstance: GoogleApis = Container.get('googleapis');
+    const auth = new googleApiInstance.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
     // const token = await this.GetOAuthAccessToken(code);
     await auth.setCredentials({
       access_token:
-        'ya29.a0AfH6SMD7_TMwC3eNcaOJORaqp0fo8kxIq6fp1r-JSux8W4zWJyeG2vGyiULM12X68XulZ64k7hm5t34vy7sXmd42vW88IEjTaPQMxYmELk_XFh2kIdJO1lMUd3cZlbI-ZuKhCJDzFMLVZBvcH-a29zuZBof5q7W0zR0',
+        'ya29.a0AfH6SMD-nZfPxhj5iCP7RmXRLo5rkIIvKCrLSSlY9gy3nV6GrJbEq-5F_bItPDbM2Nl-xxA5jxoH4-nDiiLo1UA2UrNl5TgnQmqzvPiYcLA3pN97kDVxr5mKV5WXaaym7RzG5vNK3yETU4J022t7JYDQq3ESfdOk_LM',
       id_token: code,
     });
-    const classroom = await google.classroom({ version: 'v1', auth });
+    const classroom = await googleApiInstance.classroom({ version: 'v1', auth });
     return new Promise(resolve => {
       classroom.courses.list(
         {
