@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import routes from '../api';
 import config from '../config';
+import { nextTick } from 'process';
 export default ({ app }: { app: express.Application }) => {
   /**
    * Health Check endpoints
@@ -16,20 +17,16 @@ export default ({ app }: { app: express.Application }) => {
   });
 
   app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech/'); // update to match the domain you will make the request from
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
-
-  app.use('*', (_req, res, next) => {
-    const origin = _req.headers.origin;
-    if (origin == undefined || origin.includes('eklavya')) {
+    if (process.env.NODE_ENV == 'development') {
       next();
     } else {
-      // throw new Error('UnauthorizedError');
-      res.status(401).json({ warning: 'Unauthorized Access', iptrace: _req.connection.remoteAddress });
+      res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech/');
+      //update to match the domain you will make the request from
+      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+      next();
     }
   });
+
   // Useful if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   // It shows the real origin IP in the heroku or Cloudwatch logs
   app.enable('trust proxy');
