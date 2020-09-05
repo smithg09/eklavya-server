@@ -109,7 +109,6 @@ export default class AuthService {
       this.logger.silly('Password is valid!');
       this.logger.silly('Generating JWT');
       const token = this.generateToken(userRecord);
-
       this.eventDispatcher.dispatch(events.user.signIn, { _id: userRecord._id, email: userRecord.email });
       const user = userRecord.toObject();
       Reflect.deleteProperty(user, 'password');

@@ -3,28 +3,29 @@ import { Container } from 'typedi';
 import { Service, Inject } from 'typedi';
 import { IUser } from '../interfaces/IUser';
 import { Logger } from 'winston';
+import { template } from '../helpers/verificationMailTemplate';
 
 @Service()
 export default class MailerService {
   Logger: Logger;
-  constructor(@Inject('emailClient') private emailClient) {
+  constructor(@Inject('NodeMailerClient') private nodeMailerTransport) {
     this.Logger = Container.get('logger');
   }
 
   public async SendWelcomeEmail(email) {
-    /**
-     * @TODO Call Mailchimp/Sendgrid or whatever
-     */
-    // Added example for sending mail from mailgun
     this.Logger.debug(`🔥Sending Welcome mail to %o`, email);
     const data = {
-      from: 'Excited User <me@samples.mailgun.org>',
+      from: 'Eklavya Team <account@eklavya.tech>',
       to: email,
-      subject: 'Hello',
-      text: 'Testing some Mailgun awesomness!',
+      subject: `Hi from Eklavya`,
+      text: 'Welcome to our commutiy',
     };
 
-    this.emailClient.messages().send(data);
+    const resp = await this.nodeMailerTransport.sendMail(data);
+    if (resp.rejected != '') {
+      throw new Error(`Error Sending Mail to ${resp.rejected}`);
+    }
+
     return { delivered: 1, status: 'ok' };
   }
 
@@ -33,14 +34,16 @@ export default class MailerService {
     const hostUrl = process.env.HOST_URL;
     const verificationUrl = `${hostUrl}/API/auth/verify?token=${token}`;
     const data = {
-      from: 'Team Eklavya <eklavya@mailgun.org>',
+      from: 'Eklavya Team <account@eklavya.tech>',
       to: userDetails.email,
       subject: 'Please Verify your Email address',
-      template: 'mailverification01',
-      'v:name': userDetails.name,
-      'v:verification_link': verificationUrl,
+      html: template(userDetails.name, verificationUrl),
     };
-    this.emailClient.messages().send(data);
+    const resp = await this.nodeMailerTransport.sendMail(data);
+    if (resp.rejected != '') {
+      throw new Error(`Error Sending Mail to ${resp.rejected}`);
+    }
+
     return { delivered: 1, status: 'ok' };
   }
   public StartEmailSequence(sequence: string, user: Partial<IUser>) {
