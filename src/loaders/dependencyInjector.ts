@@ -22,6 +22,14 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
       },
     });
 
+    nodeMailerTransport.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Server is ready to take our messages');
+      }
+    });
+
     const agendaInstance: Agenda = agendaFactory({ mongoConnection });
     Container.set('googleapis', google);
     LoggerInstance.info('✌️ GoogleApis loaded');
