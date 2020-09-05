@@ -108,7 +108,7 @@ export default (app: Router) => {
       if (isVerified) {
         const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
         await UserModel.updateOne({ _id: isVerified._id }, { $set: { verified: true } });
-        res.redirect('https://eklavya-client.netlify.app/');
+        res.redirect('https://app.eklavya.tech/');
       } else {
         throw new Error('Invalid Token');
       }

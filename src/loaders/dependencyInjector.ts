@@ -13,12 +13,13 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
       Container.set(m.name, m.model);
     });
     var nodeMailerTransport = mailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: 587,
+      service: 'gmail',
+      // host: process.env.MAIL_HOST,
+      // port: 587,
       secureConnection: true,
-      tls: {
-        secureProtocol: 'TLSv1_method',
-      },
+      // tls: {
+      //   secureProtocol: 'TLSv1_method',
+      // },
       auth: {
         user: process.env.MAIL_ADDRESS,
         pass: process.env.MAIL_SECRET,
