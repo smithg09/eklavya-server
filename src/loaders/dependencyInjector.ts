@@ -15,9 +15,7 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     var nodeMailerTransport = mailer.createTransport({
       host: process.env.MAIL_HOST,
       port: 587,
-      secure: false,
-      debug: true,
-      logger: false,
+      secure: true,
       tls: {
         secureProtocol: 'TLSv1_method',
       },
