@@ -14,20 +14,19 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     });
     var nodeMailerTransport = mailer.createTransport({
       host: process.env.MAIL_HOST,
-      port: 25,
+      port: 587,
       secure: false,
+      debug: true,
+      logger: false,
+      tls: {
+        secure: false,
+        ignoreTLS: true,
+        rejectUnauthorized: false,
+      },
       auth: {
         user: process.env.MAIL_ADDRESS,
         pass: process.env.MAIL_SECRET,
       },
-    });
-
-    nodeMailerTransport.verify(function (error, success) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Server is ready to take our messages');
-      }
     });
 
     const agendaInstance: Agenda = agendaFactory({ mongoConnection });
