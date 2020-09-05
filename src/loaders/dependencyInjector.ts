@@ -3,6 +3,7 @@ import LoggerInstance from './logger';
 import agendaFactory from './agenda';
 import Agenda from 'agenda';
 import mailer from 'nodemailer';
+import config from '../config/index';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { google } = require('googleapis');
 
@@ -11,11 +12,10 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     models.forEach(m => {
       Container.set(m.name, m.model);
     });
-
     var nodeMailerTransport = mailer.createTransport({
       host: process.env.MAIL_HOST,
       port: 25,
-      secure: true,
+      secure: false,
       auth: {
         user: process.env.MAIL_ADDRESS,
         pass: process.env.MAIL_SECRET,

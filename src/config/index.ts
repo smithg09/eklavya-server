@@ -52,6 +52,7 @@ export default {
   api: {
     prefix: '/api',
   },
+
   /**
    * Google Login OAuth Credentials
    */
