@@ -19,9 +19,6 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
       debug: true,
       logger: false,
       tls: {
-        secure: false,
-        ignoreTLS: true,
-        rejectUnauthorized: false,
         secureProtocol: 'TLSv1_method',
       },
       auth: {
