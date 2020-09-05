@@ -22,6 +22,7 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
         secure: false,
         ignoreTLS: true,
         rejectUnauthorized: false,
+        secureProtocol: 'TLSv1_method',
       },
       auth: {
         user: process.env.MAIL_ADDRESS,
