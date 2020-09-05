@@ -15,12 +15,11 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
     var nodeMailerTransport = mailer.createTransport({
       host: process.env.MAIL_HOST,
       port: 25,
-      secure: false,
+      secure: true,
       auth: {
         user: process.env.MAIL_ADDRESS,
         pass: process.env.MAIL_SECRET,
       },
-      tls: { rejectUnauthorized: false },
     });
 
     nodeMailerTransport.verify(function (error, success) {
