@@ -20,6 +20,7 @@ export default ({ mongoConnection, models }: { mongoConnection; models: { name: 
         user: process.env.MAIL_ADDRESS,
         pass: process.env.MAIL_SECRET,
       },
+      tls: { rejectUnauthorized: false },
     });
 
     nodeMailerTransport.verify(function (error, success) {
