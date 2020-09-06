@@ -15,7 +15,7 @@ export default class MailerService {
   public async SendWelcomeEmail(email) {
     this.Logger.debug(`🔥Sending Welcome mail to %o`, email);
     const data = {
-      from: 'Eklavya Support <eklavya.assistance@gmail.com>',
+      from: 'eklavya.assistance@gmail.com',
       to: email,
       subject: `Hi from Eklavya`,
       text: 'Welcome to our commutiy',
