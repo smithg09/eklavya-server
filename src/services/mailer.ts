@@ -15,7 +15,7 @@ export default class MailerService {
   public async SendWelcomeEmail(email) {
     this.Logger.debug(`🔥Sending Welcome mail to %o`, email);
     const data = {
-      from: 'eklavya.assistance@gmail.com',
+      from: 'Eklavya Team <assistance.eklavya@gmail.com>',
       to: email,
       subject: `Hi from Eklavya`,
       text: 'Welcome to our commutiy',
@@ -34,7 +34,7 @@ export default class MailerService {
     const hostUrl = process.env.HOST_URL;
     const verificationUrl = `${hostUrl}/API/auth/verify?token=${token}`;
     const data = {
-      from: 'Eklavya Support <eklavya.assistance@gmail.com>',
+      from: 'Eklavya Team <assistance.eklavya@gmail.com>',
       to: userDetails.email,
       subject: 'Please Verify your Email address',
       html: template(userDetails.name, verificationUrl),

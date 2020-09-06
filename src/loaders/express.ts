@@ -17,7 +17,7 @@ export default ({ app }: { app: express.Application }) => {
   });
 
   app.use((req, res, next) => {
-    if (process.env.NODE_ENV == 'development') {
+    if (process.env.NODE_ENV != 'production') {
       next();
     } else {
       res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech/');
