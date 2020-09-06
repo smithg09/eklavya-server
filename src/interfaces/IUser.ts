@@ -3,6 +3,12 @@ enum Methods {
   OAuth2 = 'OAuth2',
 }
 
+enum Roles {
+  student = 'student',
+  faculty = 'faculty',
+  staff = 'staff',
+  admin = 'admin',
+}
 export interface IUser {
   _id: string;
   method: Methods;
@@ -10,14 +16,26 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
-  salt: string;
-  role: string;
+  class: string;
+  rollNo: number;
+  semester: number;
+  department: string;
+  course: string;
+  role: Roles;
   verified: boolean;
+  profileCompletion: boolean;
   lastLogin: Date;
+  salt: string;
 }
 
 export interface IUserInputDTO {
   name: string;
   email: string;
   password: string;
+  class: string;
+  rollNo: number;
+  semester: number;
+  department: string;
+  course: string;
+  role: Roles;
 }

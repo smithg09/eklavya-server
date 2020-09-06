@@ -32,21 +32,54 @@ const User = new mongoose.Schema(
 
     password: String,
 
-    salt: String,
+    class: {
+      type: String,
+      default: null,
+    },
+
+    rollNo: {
+      type: Number,
+      default: null,
+    },
+
+    semester: {
+      type: Number,
+      default: null,
+    },
+
+    department: {
+      type: String,
+      default: null,
+    },
+
+    course: {
+      type: String,
+      default: null,
+    },
 
     role: {
       type: String,
-      default: 'user',
+      enum: ['student', 'faculty', 'staff', 'admin'],
+      required: true,
+      default: 'student',
     },
 
     verified: {
       type: Boolean,
       default: false,
     },
+
+    profileCompletion: {
+      type: Boolean,
+      default: false,
+    },
+
     lastLogin: {
       type: Date,
       default: null,
     },
+
+    salt: String,
   },
   { timestamps: true },
 );
