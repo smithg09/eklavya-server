@@ -16,12 +16,12 @@ export default ({ app }: { app: express.Application }) => {
     res.status(200).end();
   });
 
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech');
-    //update to match the domain you will make the request from
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
-  });
+  // app.use((req, res, next) => {
+  //   res.header('Access-Control-Allow-Origin', 'https://app.eklavya.tech');
+  //   //update to match the domain you will make the request from
+  //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  //   next();
+  // });
 
   // Useful if you're behind a reverse proxy (Heroku, Bluemix, AWS ELB, Nginx, etc)
   // It shows the real origin IP in the heroku or Cloudwatch logs
@@ -30,7 +30,7 @@ export default ({ app }: { app: express.Application }) => {
   // The magic package that prevents frontend developers going nuts
   // Alternate description:
   // Enable Cross Origin Resource Sharing to all origins by default
-  // app.use(cors());
+  app.use(cors());
 
   // Some sauce that always add since 2014
   // "Lets you use HTTP verbs such as PUT or DELETE in places where the client doesn't support it."
