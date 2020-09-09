@@ -138,9 +138,12 @@ export default class AuthService {
 
       const existingUser = await this.userModel.findOne({ 'OAuth2.Id': userData.id });
       if (existingUser) {
-        const transformUserRecord = transformUserData(existingUser);
         this.eventDispatcher.dispatch(events.user.signIn, { _id: existingUser._id });
-        return { user: transformUserRecord, access_token: verifiedTokens.access_token, token: verifiedTokens.id_token };
+        return {
+          user: existingUser.toObject(),
+          access_token: verifiedTokens.access_token,
+          token: verifiedTokens.id_token,
+        };
       } else {
         const emailCheckRegex = /(^\D[A-Za-z0-9\.]+@ves.ac.in)/;
         const checkIfFacultyMail = emailCheckRegex.test(userData.email);
@@ -162,8 +165,11 @@ export default class AuthService {
         await this.mailer.SendWelcomeEmail(userRecord.email);
         this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
-        const transformUserRecord = transformUserData(userRecord);
-        return { user: transformUserRecord, access_token: verifiedTokens.access_token, token: verifiedTokens.id_token };
+        return {
+          user: userRecord.toObject(),
+          access_token: verifiedTokens.access_token,
+          token: verifiedTokens.id_token,
+        };
       }
     } catch (e) {
       if (e.message.split(' ').includes('Local', 'User', 'Exists')) {
@@ -174,7 +180,7 @@ export default class AuthService {
     }
   }
 
-  public async getAccess(access_token,id_token) {
+  public async getAccess(access_token, id_token) {
     const googleApiInstance: GoogleApis = Container.get('googleapis');
     const auth = new googleApiInstance.auth.OAuth2(process.env.CLIENT_ID, process.env.CLIENT_SECRET, 'postmessage');
     // const token = await this.GetOAuthAccessToken(code);
@@ -261,7 +267,7 @@ export default class AuthService {
         name: user.name,
         exp: exp.getTime() / 1000,
       },
-      config.jwtSecret,
+      config.appSecret,
     );
   }
 }

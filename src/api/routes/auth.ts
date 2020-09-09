@@ -11,6 +11,7 @@ import AuthService from '../../services/auth';
 import { IUserInputDTO } from '../../interfaces/IUser';
 import middlewares from '../middlewares';
 import { transformUserData } from '../../helpers/transformUserData';
+import { encrypt, decrypt } from '../middlewares/cryptoAES';
 
 const route = Router();
 
@@ -39,7 +40,8 @@ export default (app: Router) => {
         const authServiceInstance = Container.get(AuthService);
         const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
         const transformedUserData = transformUserData(user);
-        return res.status(201).json({ user: transformedUserData, token });
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        return res.status(201).json({ user_data: transformedUserData, token });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -63,7 +65,8 @@ export default (app: Router) => {
         const authServiceInstance = Container.get(AuthService);
         const { user, token } = await authServiceInstance.SignIn(email, password);
         const transformedUserData = transformUserData(user);
-        return res.status(201).json({ user: transformedUserData, token });
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        return res.status(201).json({ user_data: transformedUserData, token });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -83,9 +86,17 @@ export default (app: Router) => {
       const authServiceInstance = Container.get(AuthService);
       // eslint-disable-next-line @typescript-eslint/camelcase
       const { user, access_token, token } = await authServiceInstance.GoogleSignIn(req.body.oauth_code);
-      console.log(access_token);
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      res.json({ user, access_token, token }).status(200);
+      const transformUserRecord = transformUserData(user);
+      const encryptedAT = encrypt(access_token);
+      const encryptedT = encrypt(token);
+      res
+        .json({
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          user_data: transformUserRecord,
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          oauth2_data: { access_token: encryptedAT, token: encryptedT },
+        })
+        .status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);
@@ -97,7 +108,7 @@ export default (app: Router) => {
     logger.debug('Calling OAuth Sign-In endpoint');
     try {
       const authServiceInstance = Container.get(AuthService);
-      const data = await authServiceInstance.getAccess(req.body.access_token, req.body.id_token);
+      const data = await authServiceInstance.getAccess(decrypt(req.body.access_token), decrypt(req.body.id_token));
       res.json(data).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
@@ -109,7 +120,7 @@ export default (app: Router) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Verifying Email address token');
     try {
-      const isVerified = await jwt.verify(req.query.token, config.jwtSecret);
+      const isVerified = await jwt.verify(req.query.token, config.appSecret);
       if (isVerified) {
         const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
         await UserModel.updateOne({ _id: isVerified._id }, { $set: { verified: true } });
