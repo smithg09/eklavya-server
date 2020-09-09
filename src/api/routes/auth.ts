@@ -123,7 +123,7 @@ export default (app: Router) => {
     }
   });
 
-  route.get('/verify_oauth2', async (req: Request, res: Response, next: NextFunction) => {
+  route.post('/verify_oauth2', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Verifying OAuth2 token');
     try {
