@@ -1,16 +1,12 @@
-import jwt from 'express-jwt';
+import jwt from 'jsonwebtoken';
 import config from '../../config';
-import { decrypt } from '../middlewares/cryptoAES';
+import { decrypt } from './cryptoAES';
+import { Container } from 'typedi';
+import mongoose from 'mongoose';
+import { IUser } from '../../interfaces/IUser';
+import axios from 'axios';
+import { Logger } from 'winston';
 
-/**
- * We are assuming that the JWT will come in a header with the form
- *
- * Authorization: Bearer ${JWT}
- *
- * But it could come in a query parameter with the name that you want like
- * GET https://my-bulletproof-api.com/stats?apiKey=${JWT}
- * Luckily this API follow _common sense_ ergo a _good design_ and don't allow that ugly stuff
- */
 const getTokenFromHeader = req => {
   /**
    * @TODO Edge and Internet Explorer do some weird things with the headers
@@ -20,18 +16,47 @@ const getTokenFromHeader = req => {
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
   ) {
-    return decrypt(req.headers.authorization.split(' ')[1]);
+    const AUTHORIZATION = req.headers.authorization.split(' ');
+    return { authMethod: AUTHORIZATION[1], token: decrypt(AUTHORIZATION[2]) };
   }
   return null;
 };
 
-const isAuth = jwt({
-  secret: config.appSecret, // The _secret_ to sign the JWTs
-  userProperty: 'token', // Use req.token to store the JWT
-  getToken: getTokenFromHeader, // How to extract the JWT from the request
-  // issuer: `localhost:3000`,
-  // restrict allowed algorithms
-  algorithms: ['HS256'],
-});
+const isAuth = async (req, res, next) => {
+  const logger: Logger = Container.get('logger');
+  logger.debug('Verifying JWT Token');
+  const { authMethod, token } = getTokenFromHeader(req);
+  try {
+    if (authMethod != 'local') {
+      const { data } = await axios({
+        url: `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
+        method: 'get',
+      }).catch(_e => {
+        throw new Error('Invalid OAuth2 Token');
+      });
+      if (data) {
+        req.authMethod = authMethod;
+        req.token = token;
+        req.userId = data.sub;
+        next();
+      } else {
+        throw new Error('Invalid Token');
+      }
+    } else {
+      const data = await jwt.verify(token, config.appSecret);
+      if (data) {
+        req.authMethod = authMethod;
+        req.token = token;
+        req.userId = data._id;
+        next();
+      } else {
+        throw new Error('Invalid Token');
+      }
+    }
+  } catch (e) {
+    logger.error('🔥 error: %o', e);
+    return next(e);
+  }
+};
 
 export default isAuth;

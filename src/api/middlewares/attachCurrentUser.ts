@@ -2,6 +2,7 @@ import { Container } from 'typedi';
 import mongoose from 'mongoose';
 import { IUser } from '../../interfaces/IUser';
 import { Logger } from 'winston';
+import { transformUserData } from '../../helpers/transformUserData';
 
 /**
  * * Attach user to req.currentUser
@@ -13,16 +14,22 @@ const attachCurrentUser = async (req, res, next) => {
   const logger: Logger = Container.get('logger');
   try {
     const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
-    const userRecord = await UserModel.findById(req.token._id);
-    if (!userRecord) {
-      req.isAuth = false;
-      return res.sendStatus(401);
+    let userRecord;
+    if (req.authMethod != 'local') {
+      userRecord = await UserModel.findOne({ 'OAuth2.Id': req.userId });
+    } else {
+      userRecord = await UserModel.findById(req.userId);
     }
-    const currentUser = userRecord.toObject();
-    Reflect.deleteProperty(currentUser, 'password');
-    Reflect.deleteProperty(currentUser, 'salt');
-    req.currentUser = currentUser;
-    return next();
+    const data = userRecord.toObject();
+    Reflect.deleteProperty(data, 'password');
+    Reflect.deleteProperty(data, 'salt');
+    const transformedData = transformUserData(data);
+    if (transformedData) {
+      req.currentUser = transformedData;
+      return next();
+    } else {
+      throw new Error('Error Sending User Data');
+    }
   } catch (e) {
     logger.error('🔥 Error attaching user to req: %o', e);
     return next(e);

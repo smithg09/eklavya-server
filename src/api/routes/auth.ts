@@ -1,6 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import axios from 'axios';
 import { celebrate, Joi } from 'celebrate';
 import { Logger } from 'winston';
 import jwt from 'jsonwebtoken';
@@ -135,49 +134,22 @@ export default (app: Router) => {
     }
   });
 
-  route.post('/verify_token', async (req: Request, res: Response, next: NextFunction) => {
-    const logger: Logger = Container.get('logger');
-    logger.debug('Verifying OAuth2 token');
-    const token = decrypt(req.headers.authorization.split(' ')[1]);
-    try {
-      const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
-      let isVerified, userRecord;
-      if (req.body.method != 'local') {
-        const { data } = await axios({
-          url: `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
-          method: 'get',
-        }).catch(_e => {
-          throw new Error('Invalid OAuth2 Token');
-        });
-        if (data) {
-          isVerified = data;
-          userRecord = await UserModel.findOne({ 'OAuth2.Id': isVerified.sub });
-        } else {
-          throw new Error('Invalid Token');
-        }
-      } else {
-        isVerified = await jwt.verify(token, config.appSecret);
-        userRecord = await UserModel.findById(isVerified._id);
+  route.post(
+    '/verify_token',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger: Logger = Container.get('logger');
+      logger.debug('Verifying OAuth2 token');
+      try {
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        res.json({ user_data: req.currentUser }).status(200);
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
       }
-
-      if (isVerified) {
-        const data = userRecord.toObject();
-        Reflect.deleteProperty(data, 'password');
-        Reflect.deleteProperty(data, 'salt');
-        const transformedData = transformUserData(data);
-        if (transformedData) {
-          res.status(200).json(transformedData);
-        } else {
-          throw new Error('Error Sending User Data');
-        }
-      } else {
-        throw new Error('Invalid Token');
-      }
-    } catch (e) {
-      logger.error('🔥 error: %o', e);
-      return next(e);
-    }
-  });
+    },
+  );
 
   /**
    * @TODO Let's leave this as a place holder for now

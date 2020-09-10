@@ -16,7 +16,7 @@ export default (app: Router) => {
    *
    * TODO Filter: create a route for filtering repository data into various options like subjects , topics , specific keywords etc..
    */
-  app.use('/repositoryData', middlewares.isAuth, middlewares.attachCurrentUser, route);
+  app.use('/repositoryData', middlewares.isAuth, route);
 
 
   route.get('/all', async (req: Request, res: Response, next: NextFunction) => {
