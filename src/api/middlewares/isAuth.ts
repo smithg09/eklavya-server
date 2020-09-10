@@ -1,5 +1,6 @@
 import jwt from 'express-jwt';
 import config from '../../config';
+import { decrypt } from '../middlewares/cryptoAES';
 
 /**
  * We are assuming that the JWT will come in a header with the form
@@ -19,7 +20,7 @@ const getTokenFromHeader = req => {
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
   ) {
-    return req.headers.authorization.split(' ')[1];
+    return decrypt(req.headers.authorization.split(' ')[1]);
   }
   return null;
 };

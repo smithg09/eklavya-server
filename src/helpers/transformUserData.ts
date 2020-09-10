@@ -11,7 +11,7 @@ export const transformUserData = UserData => {
     semester: UserData.semester || null,
     department: UserData.department || null,
     course: UserData.course || null,
-    verified: UserData.verified || null,
+    verified: UserData.verified,
     profileCompletion: {
       status: UserData.profileCompletion,
       // eslint-disable-next-line prettier/prettier

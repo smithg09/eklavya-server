@@ -41,7 +41,7 @@ export default (app: Router) => {
         const { user, token } = await authServiceInstance.SignUp(req.body as IUserInputDTO);
         const transformedUserData = transformUserData(user);
         // eslint-disable-next-line @typescript-eslint/camelcase
-        return res.status(201).json({ user_data: transformedUserData, token });
+        return res.status(201).json({ user_data: transformedUserData, token: encrypt(token) });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -66,7 +66,7 @@ export default (app: Router) => {
         const { user, token } = await authServiceInstance.SignIn(email, password);
         const transformedUserData = transformUserData(user);
         // eslint-disable-next-line @typescript-eslint/camelcase
-        return res.status(201).json({ user_data: transformedUserData, token });
+        return res.status(201).json({ user_data: transformedUserData, token: encrypt(token) });
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
@@ -94,7 +94,8 @@ export default (app: Router) => {
           // eslint-disable-next-line @typescript-eslint/camelcase
           user_data: transformUserRecord,
           // eslint-disable-next-line @typescript-eslint/camelcase
-          oauth2_data: { access_token: encryptedAT, token: encryptedT },
+          access_token: encryptedAT,
+          token: encryptedT,
         })
         .status(200);
     } catch (e) {
@@ -134,18 +135,41 @@ export default (app: Router) => {
     }
   });
 
-  route.post('/verify_oauth2', async (req: Request, res: Response, next: NextFunction) => {
+  route.post('/verify_token', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Verifying OAuth2 token');
+    const token = decrypt(req.headers.authorization.split(' ')[1]);
     try {
-      const { data } = await axios({
-        url: `https://oauth2.googleapis.com/tokeninfo?id_token=${req.query.id_token}`,
-        method: 'get',
-      }).catch(_e => {
-        throw new Error('Invalid OAuth2 Token');
-      });
-      if (data) {
-        res.status(200).json(data);
+      const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
+      let isVerified, userRecord;
+      if (req.body.method != 'local') {
+        const { data } = await axios({
+          url: `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`,
+          method: 'get',
+        }).catch(_e => {
+          throw new Error('Invalid OAuth2 Token');
+        });
+        if (data) {
+          isVerified = data;
+          userRecord = await UserModel.findOne({ 'OAuth2.Id': isVerified.sub });
+        } else {
+          throw new Error('Invalid Token');
+        }
+      } else {
+        isVerified = await jwt.verify(token, config.appSecret);
+        userRecord = await UserModel.findById(isVerified._id);
+      }
+
+      if (isVerified) {
+        const data = userRecord.toObject();
+        Reflect.deleteProperty(data, 'password');
+        Reflect.deleteProperty(data, 'salt');
+        const transformedData = transformUserData(data);
+        if (transformedData) {
+          res.status(200).json(transformedData);
+        } else {
+          throw new Error('Error Sending User Data');
+        }
       } else {
         throw new Error('Invalid Token');
       }

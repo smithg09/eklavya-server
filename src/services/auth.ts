@@ -9,7 +9,6 @@ import { Container } from 'typedi';
 import { IUser, IUserInputDTO } from '../interfaces/IUser';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 import events from '../subscribers/events';
-import { transformUserData } from '../helpers/transformUserData';
 import { reject } from 'lodash';
 import { GoogleApis } from 'googleapis';
 
