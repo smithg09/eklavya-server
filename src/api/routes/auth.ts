@@ -198,7 +198,7 @@ export default (app: Router) => {
       logger.debug('Verifying OAuth2 token');
       try {
         // eslint-disable-next-line @typescript-eslint/camelcase
-        res.json({ user_data: req.currentUser }).status(200);
+        res.json({ jwt: true, user_data: req.currentUser }).status(200);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);
