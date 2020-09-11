@@ -117,7 +117,7 @@ export default (app: Router) => {
   });
 
   route.patch(
-    '/profile',
+    '/profile_patch',
     middlewares.isAuth,
     middlewares.attachCurrentUser,
     async (req: Request, res: Response, next: NextFunction) => {
