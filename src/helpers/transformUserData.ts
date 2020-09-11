@@ -15,7 +15,7 @@ export const transformUserData = UserData => {
     profileCompletion: {
       status: UserData.profileCompletion,
       // eslint-disable-next-line prettier/prettier
-      completed: (((5 - (Object.keys(UserData).filter(El => UserData[El] == null && El != 'lastLogin').length)) / 5) * 100),
+      completed: (((5 - (Object.keys(UserData).filter(El => UserData[El] == null && El != 'lastLogin' && El != 'image').length)) / 5) * 100),
     },
     lastLogin: new Date(UserData.lastLogin).toString() || null,
     createdAt: new Date(UserData.createdAt).toString() || null,

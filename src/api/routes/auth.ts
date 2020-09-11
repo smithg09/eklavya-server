@@ -116,6 +116,61 @@ export default (app: Router) => {
     }
   });
 
+  route.patch(
+    '/profile',
+    middlewares.isAuth,
+    middlewares.attachCurrentUser,
+    async (req: Request, res: Response, next: NextFunction) => {
+      const logger: Logger = Container.get('logger');
+      logger.debug('Calling profile patch endpoint');
+      try {
+        const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
+        const userId = req.currentUser._id;
+
+        const pendingValues = new Set(
+          Object.keys(req.currentUser).filter(El => req.currentUser[El] == null && El != 'lastLogin' && El != 'image'),
+        );
+        const receivedValues = Object.keys(req.body).filter(El => pendingValues.has(El));
+        if (req.currentUser.profileCompletion.status != true) {
+          if (receivedValues.length > 0) {
+            let subQuery = {};
+            await receivedValues.map(patchVal => {
+              subQuery[patchVal] = req.body[patchVal];
+            });
+            const customQuery = {
+              $set: subQuery,
+            };
+            const patchRes = await UserModel.updateOne({ _id: userId }, customQuery);
+            if (patchRes) {
+              const userData = await UserModel.findById(userId);
+              let transformedData = transformUserData(userData.toObject());
+              if (!transformedData.profileCompletion.status) {
+                await UserModel.updateOne(
+                  { _id: userId },
+                  { $set: { profileCompletion: true } },
+                  { returnOriginal: true },
+                );
+                const data = await UserModel.findById(userId);
+                transformedData = transformUserData(data.toObject());
+              }
+              // eslint-disable-next-line @typescript-eslint/camelcase
+              res.status(200).json({ user_data: transformedData });
+            } else {
+              throw new Error('Error Updating User Data');
+            }
+          } else {
+            throw new Error('No values found to update!');
+          }
+        } else {
+          throw new Error('Profile Already Completed!');
+        }
+      } catch (e) {
+        logger.error('🔥 error: %o', e);
+        return next(e);
+      }
+    },
+  );
+
   route.get('/verify', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Verifying Email address token');
