@@ -7,6 +7,8 @@ class BootstrapApp {
   private appModule: express.Application;
   constructor() {
     this.appModule = express();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    global.__basedir = __dirname;
     /**
      * A little hack here
      * Async/Await cannot used in Class methods
