@@ -103,19 +103,6 @@ export default (app: Router) => {
     }
   });
 
-  route.post('/classroom', async (req: Request, res: Response, next: NextFunction) => {
-    const logger: Logger = Container.get('logger');
-    logger.debug('Calling OAuth Sign-In endpoint');
-    try {
-      const authServiceInstance = Container.get(AuthService);
-      const data = await authServiceInstance.getAccess(decrypt(req.body.access_token), decrypt(req.body.id_token));
-      res.json(data).status(200);
-    } catch (e) {
-      logger.error('🔥 error: %o', e);
-      return next(e);
-    }
-  });
-
   route.patch(
     '/profile_patch',
     middlewares.isAuth,
@@ -198,7 +185,7 @@ export default (app: Router) => {
       logger.debug('Verifying OAuth2 token');
       try {
         // eslint-disable-next-line @typescript-eslint/camelcase
-        res.json({ jwt: true, user_data: req.currentUser }).status(200);
+        res.json({ jwt: 'authorized', user_data: req.currentUser }).status(200);
       } catch (e) {
         logger.error('🔥 error: %o', e);
         return next(e);

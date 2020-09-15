@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import jwt from 'jsonwebtoken';
 import config from '../../config';
 import { decrypt } from './cryptoAES';
 import { Container } from 'typedi';
-import mongoose from 'mongoose';
-import { IUser } from '../../interfaces/IUser';
 import axios from 'axios';
 import { Logger } from 'winston';
 
@@ -16,8 +16,16 @@ const getTokenFromHeader = req => {
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
     (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
   ) {
+    let auth_token = null;
     const AUTHORIZATION = req.headers.authorization.split(' ');
-    return { authMethod: AUTHORIZATION[1], token: decrypt(AUTHORIZATION[2]) };
+    if (req.headers.access_token) {
+      auth_token = req.headers.access_token;
+    }
+    return {
+      authMethod: AUTHORIZATION[1],
+      token: decrypt(AUTHORIZATION[2]),
+      authToken: (auth_token && decrypt(auth_token)) || null,
+    };
   }
   return null;
 };
@@ -25,7 +33,7 @@ const getTokenFromHeader = req => {
 const isAuth = async (req, res, next) => {
   const logger: Logger = Container.get('logger');
   logger.debug('Verifying JWT Token');
-  const { authMethod, token } = getTokenFromHeader(req);
+  const { authMethod, token, authToken } = getTokenFromHeader(req);
   try {
     if (authMethod != 'local') {
       const { data } = await axios({
@@ -38,7 +46,8 @@ const isAuth = async (req, res, next) => {
         req.authMethod = authMethod;
         req.token = token;
         req.userId = data.sub;
-        next();
+        req.access_token = authToken;
+        return next();
       } else {
         throw new Error('Invalid Token');
       }
@@ -48,7 +57,8 @@ const isAuth = async (req, res, next) => {
         req.authMethod = authMethod;
         req.token = token;
         req.userId = data._id;
-        next();
+        req.access_token = null;
+        return next();
       } else {
         throw new Error('Invalid Token');
       }
