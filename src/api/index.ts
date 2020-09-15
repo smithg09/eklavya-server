@@ -4,11 +4,13 @@ import scrape from './routes/scrape';
 import repository from './routes/repository';
 import agendash from './routes/agendash';
 import graphQL from './graphql';
+import classroom from './routes/classroom';
 
 // guaranteed to get dependencies
 export default () => {
   const app = Router();
   auth(app);
+  classroom(app);
   scrape(app);
   repository(app);
   graphQL(app);
