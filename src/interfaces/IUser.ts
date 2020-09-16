@@ -33,11 +33,5 @@ export interface IUserInputDTO {
   name: string;
   email: string;
   password: string;
-  mobileno: number;
-  class: string;
-  uid: number;
-  semester: number;
-  department: string;
-  course: string;
   role: Roles;
 }
