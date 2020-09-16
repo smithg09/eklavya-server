@@ -6,6 +6,8 @@ declare global {
   namespace Express {
     export interface Request {
       currentUser: IUser & Document;
+      access_token: string;
+      token: string;
     }
   }
 
