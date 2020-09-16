@@ -32,12 +32,17 @@ const User = new mongoose.Schema(
 
     password: String,
 
+    mobileno: {
+      type: Number,
+      default: null,
+    },
+
     class: {
       type: String,
       default: null,
     },
 
-    rollNo: {
+    uid: {
       type: Number,
       default: null,
     },

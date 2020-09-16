@@ -16,8 +16,9 @@ export interface IUser {
   name: string;
   email: string;
   password: string;
+  mobileno: number;
   class: string;
-  rollNo: number;
+  uid: number;
   semester: number;
   department: string;
   course: string;
@@ -32,8 +33,9 @@ export interface IUserInputDTO {
   name: string;
   email: string;
   password: string;
+  mobileno: number;
   class: string;
-  rollNo: number;
+  uid: number;
   semester: number;
   department: string;
   course: string;

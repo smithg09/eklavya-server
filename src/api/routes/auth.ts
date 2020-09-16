@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Router, Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import { celebrate, Joi } from 'celebrate';
@@ -24,8 +25,9 @@ export default (app: Router) => {
         name: Joi.string().required(),
         email: Joi.string().required(),
         password: Joi.string().required(),
+        mobileno: Joi.number(),
         class: Joi.string(),
-        rollNo: Joi.number(),
+        uid: Joi.number(),
         semester: Joi.number(),
         department: Joi.string(),
         course: Joi.string(),
@@ -113,8 +115,7 @@ export default (app: Router) => {
       try {
         const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
         const userId = req.currentUser._id;
-
-        if (req.currentUser.profileCompletion.status != true) {
+        if (req.currentUser.profileCompletion != true) {
           const pendingValues = new Set(
             Object.keys(req.currentUser).filter(
               El => req.currentUser[El] == null && El != 'lastLogin' && El != 'image',
@@ -133,12 +134,28 @@ export default (app: Router) => {
             if (patchRes) {
               const userData = await UserModel.findById(userId);
               let transformedData = transformUserData(userData.toObject());
-              if (!transformedData.profileCompletion.status) {
-                await UserModel.updateOne(
-                  { _id: userId },
-                  { $set: { profileCompletion: true } },
-                  { returnOriginal: true },
-                );
+              if (!transformedData.profileCompletion) {
+                if (transformedData.role == 'faculty' || transformedData.role == 'staff') {
+                  // eslint-disable-next-line prettier/prettier
+                  var profilecompletion = (((4 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'image' && El != 'class' && El != 'semester' && El != 'course').length)) / 4) * 100)
+                  // console.log(profilecompletion)
+                  if (profilecompletion === 100) {
+                    await UserModel.updateOne(
+                      { _id: userId },
+                      { $set: { profileCompletion: true } },
+                      { returnOriginal: true },
+                    );
+                  }
+                } else {
+                  var profilecompletion = (((7 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'image').length)) / 7) * 100)
+                  if (profilecompletion === 100) {
+                    await UserModel.updateOne(
+                      { _id: userId },
+                      { $set: { profileCompletion: true } },
+                      { returnOriginal: true },
+                    );
+                  }
+                }
                 const data = await UserModel.findById(userId);
                 transformedData = transformUserData(data.toObject());
               }
