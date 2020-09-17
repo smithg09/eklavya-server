@@ -23,7 +23,6 @@ export default class ScrapperService {
         ScrappedQuiz: ScrappedQuiz.scrappedQuiz,
       };
     } catch (e) {
-      console.log(e);
       if (e.message.split(' ').includes('Specified', 'Not', 'Supported')) {
         throw new Error('Website You Specified Is Not Supported Yet!');
       } else {
@@ -66,7 +65,6 @@ export default class ScrapperService {
       });
       return { header, scrappedQuiz };
     } catch (e) {
-      console.log(e);
       throw new Error('Error Scrapping IndiaBix, Please check the URL!');
     }
   }

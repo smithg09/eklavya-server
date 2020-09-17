@@ -32,12 +32,17 @@ const User = new mongoose.Schema(
 
     password: String,
 
+    picture: {
+      type: String,
+      default: null,
+    },
+
     mobileno: {
       type: Number,
       default: null,
     },
 
-    class: {
+    division: {
       type: String,
       default: null,
     },

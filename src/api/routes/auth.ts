@@ -26,7 +26,7 @@ export default (app: Router) => {
         email: Joi.string().required(),
         password: Joi.string().required(),
         mobileno: Joi.number(),
-        class: Joi.string(),
+        division: Joi.string(),
         uid: Joi.number(),
         semester: Joi.number(),
         department: Joi.string(),
@@ -118,7 +118,7 @@ export default (app: Router) => {
         if (req.currentUser.profileCompletion != true) {
           const pendingValues = new Set(
             Object.keys(req.currentUser).filter(
-              El => req.currentUser[El] == null && El != 'lastLogin' && El != 'image',
+              El => req.currentUser[El] == null && El != 'lastLogin' && El != 'picture',
             ),
           );
           const receivedValues = Object.keys(req.body).filter(El => pendingValues.has(El));
@@ -137,8 +137,7 @@ export default (app: Router) => {
               if (!transformedData.profileCompletion) {
                 if (transformedData.role == 'faculty' || transformedData.role == 'staff') {
                   // eslint-disable-next-line prettier/prettier
-                  var profilecompletion = (((4 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'image' && El != 'class' && El != 'semester' && El != 'course').length)) / 4) * 100)
-                  // console.log(profilecompletion)
+                  var profilecompletion = (((4 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'picture' && El != 'division' && El != 'semester' && El != 'course').length)) / 4) * 100)
                   if (profilecompletion === 100) {
                     await UserModel.updateOne(
                       { _id: userId },
@@ -147,7 +146,7 @@ export default (app: Router) => {
                     );
                   }
                 } else {
-                  var profilecompletion = (((7 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'image').length)) / 7) * 100)
+                  var profilecompletion = (((7 - (Object.keys(transformedData).filter(El => transformedData[El] == null && El != 'lastLogin' && El != 'picture').length)) / 7) * 100)
                   if (profilecompletion === 100) {
                     await UserModel.updateOne(
                       { _id: userId },
@@ -172,7 +171,9 @@ export default (app: Router) => {
           if (patchValues.length > 0) {
             let subQuery = {};
             await patchValues.map(patchVal => {
-              subQuery[patchVal] = req.body[patchVal];
+              if (!['verified', 'profileCompletion', 'lastLogin', 'method', 'email','_id'].includes(patchVal)) {
+                subQuery[patchVal] = req.body[patchVal];
+              }
             });
             const customQuery = {
               $set: subQuery,
