@@ -7,7 +7,7 @@ export const transformUserData = UserData => {
     mobileno: UserData.mobileno || null,
     role: UserData.role,
     method: UserData.method,
-    class: UserData.class || null,
+    Class: UserData.class || null,
     uid: UserData.uid || null,
     semester: UserData.semester || null,
     department: UserData.department || null,
