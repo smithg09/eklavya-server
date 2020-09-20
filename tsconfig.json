@@ -24,7 +24,9 @@
     "skipLibCheck": true,
   },
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "./src/python/*",
+    "./src/public/*",
   ],
   "exclude": [
     "node_modules",
