@@ -7,6 +7,7 @@ import graphQL from './graphql';
 import classroom from './routes/classroom';
 import { spawn } from 'child_process';
 import path from 'path';
+import { createWorker } from 'tesseract.js';
 
 // guaranteed to get dependencies
 export default () => {
@@ -40,6 +41,55 @@ export default () => {
     pythonProcess.stdout.on('data', data => {
       _res.status(200).json({ 'python-script': data.toString() });
     });
+  });
+
+  app.post('/by', (_req: Request, _res: Response) => {
+    const pythonProcess = spawn('python', [path.join(global.__basedir, 'python', 'bycryptp.py')]);
+    pythonProcess.stdout.on('data', data => {
+      _res.status(200).json({ 'bycrypt-script': data.toString() });
+    });
+  });
+
+  app.post('/ocr', async (_req: Request, _res: Response) => {
+    const worker = createWorker({
+      logger: m => console.log(m),
+    });
+    const image = path.resolve(__dirname, _req.body.image);
+    console.log(image);
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+    const {
+      data: { text },
+    } = await worker.recognize(image);
+    await worker.terminate();
+    var data = text;
+    var newfa = data.split('\n');
+    console.log(newfa)
+    var re1 = /^[A-Za-z1-9]+\.|\)/;
+    var newaw = newfa.filter(el => re1.test(el));
+    var answer = [];
+    var qa = [];
+    var newre1 = /^[A-Za-z]+\.|\)/;
+    var newre = /^[0-9]+\.|\)/;
+    var qa = [];
+    console.log(newaw)
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    for (i = 0; i <= newaw.length; i++) {
+      var i = 0;
+      console.log(newaw)
+      if (newre.test(newaw[i])) {
+        var q = newaw.shift();
+        while (newre1.test(newaw[i])) {
+          console.log(newaw[i])
+          answer.push(newaw[i]);
+          newaw.shift();
+        }
+        qa.push({ answers: answer, question: q });
+        answer = [];
+      }
+    }
+    _res.json(qa);
   });
 
   return app;
