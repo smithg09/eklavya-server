@@ -72,7 +72,7 @@ export default () => {
     };
 
     tesseract
-      .recognize('image.jpg', config)
+      .recognize('a.png', config)
       .then(text => {
         var data = text;
         var newfa = data.split('\n');
