@@ -2,7 +2,8 @@
 import { Container } from 'typedi';
 import { Service, Inject } from 'typedi';
 import { Logger } from 'winston';
-// import { createWorker } from 'tesseract.js';
+import path from 'path';
+import { createWorker } from 'tesseract.js';
 import tesseract from 'node-tesseract-ocr';
 
 @Service()
@@ -19,11 +20,26 @@ export default class OCRService {
     };
   }
 
-  public async recognize(img_src) {
+  public async recognizetext(img_src) {
     try {
-      const text = await tesseract.recognize(img_src, this.tesseraact_config);
-      return text;
+      if (process.env.NODE_ENV != 'production') {
+        const worker = createWorker({
+          logger: m => console.log(m),
+        });
+        await worker.load();
+        await worker.loadLanguage('eng');
+        await worker.initialize('eng');
+        const {
+          data: { text },
+        } = await worker.recognize(img_src);
+        await worker.terminate();
+        return text;
+      } else {
+        const text = await tesseract.recognize(img_src, this.tesseraact_config);
+        return text;
+      }
     } catch (e) {
+      console.log(e);
       throw new Error("Couldn't recognize the text! Please try again");
     }
   }
