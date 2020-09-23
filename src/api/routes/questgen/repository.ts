@@ -2,8 +2,8 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 // import RepositoryService from '../../services/repository';
 import mongoose from 'mongoose';
-import { IRepository } from '../../interfaces/IRepository';
-import middlewares from '../middlewares';
+import { IRepository } from '../../../interfaces/IRepository';
+import middlewares from '../../middlewares';
 import { Logger } from 'winston';
 
 const route = Router();

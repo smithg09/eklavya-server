@@ -1,9 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
-import ScrapperService from '../../services/scrapper';
-import RepositoryService from '../../services/repository';
+import ScrapperService from '../../../services/scrapper';
+import RepositoryService from '../../../services/repository';
 import { celebrate, Joi } from 'celebrate';
-import middlewares from '../middlewares';
+import middlewares from '../../middlewares';
 import { Logger } from 'winston';
 
 const route = Router();
@@ -28,9 +28,9 @@ export default (app: Router) => {
       logger.debug('Scrapping quiz data from : %o', req.body.scrapeURL);
       try {
         /**
-         * 1. Okay! so here we are getting instance of scrapper and repository service.
-         * 2. @function Scrape: Scrapping Website @returns quiz data.
-         * 3. @function Store: Saving Scrapped data to @DB Repository.
+         * * 1. Okay! so here we are getting instance of scrapper and repository service.
+         * ? @function Scrape: Scrapping Website @returns quiz data.
+         * ? @function Store: Saving Scrapped data to @DB Repository.
          */
 
         const scrapeServiceInstance = Container.get(ScrapperService);

@@ -1,24 +1,14 @@
 import { Router, Request, Response } from 'express';
-import auth from './routes/auth';
-import scrape from './routes/scrape';
-import repository from './routes/repository';
-import agendash from './routes/agendash';
+import subRoutes from './routes';
 import graphQL from './graphql';
-import classroom from './routes/classroom';
 // import { spawn } from 'child_process';
 // import path from 'path';
-// import { createWorker } from 'tesseract.js';
-import tesseract from 'node-tesseract-ocr';
 
 // guaranteed to get dependencies
 export default () => {
   const app = Router();
-  auth(app);
-  classroom(app);
-  scrape(app);
-  repository(app);
+  subRoutes(app);
   graphQL(app);
-  agendash(app);
 
   // Request to check if server running
   app.get('/ping', (_req: Request, _res: Response) => {
@@ -64,47 +54,29 @@ export default () => {
     //   data: { text },
     // } = await worker.recognize(image);
     // await worker.terminate();
-
-    const config = {
-      lang: 'eng',
-      oem: 1,
-      psm: 3,
-    };
-
-    tesseract
-      .recognize('a.png', config)
-      .then(text => {
-        var data = text;
-        var newfa = data.split('\n');
-        console.log(newfa)
-        var re1 = /^[A-Za-z1-9]+\.|\)/;
-        var newaw = newfa.filter(el => re1.test(el));
-        var answer = [];
-        var qa = [];
-        var newre1 = /^[A-Za-z]+\.|\)/;
-        var newre = /^[0-9]+\.|\)/;
-        var qa = [];
-        console.log(newaw)
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        for (i = 0; i <= newaw.length; i++) {
-          var i = 0;
-          console.log(newaw)
-          if (newre.test(newaw[i])) {
-            var q = newaw.shift();
-            while (newre1.test(newaw[i])) {
-              console.log(newaw[i])
-              answer.push(newaw[i]);
-              newaw.shift();
-            }
-            qa.push({ answers: answer, question: q });
-            answer = [];
-          }
+    var data = 'text';
+    var newfa = data.split('\n');
+    var re1 = /^[A-Za-z1-9]+\.|\)/;
+    var newaw = newfa.filter(el => re1.test(el));
+    var answer = [];
+    var qa = [];
+    var newre1 = /^[A-Za-z]+\.|\)/;
+    var newre = /^[0-9]+\.|\)/;
+    var qa = [];
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    for (i = 0; i <= newaw.length; i++) {
+      var i = 0;
+      if (newre.test(newaw[i])) {
+        var q = newaw.shift();
+        while (newre1.test(newaw[i])) {
+          answer.push(newaw[i]);
+          newaw.shift();
         }
-        _res.json(qa);
-      })
-      .catch(error => {
-        console.log(error.message)
-      })
+        qa.push({ options: answer, question: q });
+        answer = [];
+      }
+    }
+    _res.json(qa);
   });
 
   return app;
