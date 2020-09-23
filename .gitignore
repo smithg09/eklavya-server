@@ -13,3 +13,7 @@ yarn-error.log*
 .env
 
 /src/public/googletap.html
+
+*.drawio.png
+*.drawio
+demo.md
