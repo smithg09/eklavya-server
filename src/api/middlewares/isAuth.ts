@@ -6,34 +6,45 @@ import { decrypt } from './cryptoAES';
 import { Container } from 'typedi';
 import axios from 'axios';
 import { Logger } from 'winston';
+import { auth } from 'googleapis/build/src/apis/abusiveexperiencereport';
 
-const getTokenFromHeader = req => {
+const getTokenFromHeader = (req,next) => {
   /**
    * @TODO Edge and Internet Explorer do some weird things with the headers
    * So I believe that this should handle more 'edge' cases ;)
    */
-  if (
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
-    (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
-  ) {
-    let auth_token = null;
-    const AUTHORIZATION = req.headers.authorization.split(' ');
-    if (req.headers.access_token) {
-      auth_token = req.headers.access_token;
+  try {
+    if (
+      (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Token') ||
+      (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
+    ) {
+      let auth_token = null;
+      const AUTHORIZATION = req.headers.authorization.split(' ').filter(el => el != '');
+
+      if (req.headers.access_token) {
+        auth_token = req.headers.access_token;
+      }
+      console.log(AUTHORIZATION);
+      if (AUTHORIZATION.length < 2) {
+        throw new Error('Not Enough values!');
+      }
+      return {
+        authMethod: AUTHORIZATION[1],
+        token: decrypt(AUTHORIZATION[2]),
+        authToken: (auth_token && decrypt(auth_token)) || null,
+      };
+    } else {
+      throw new Error('No Authorization Header Found!');
     }
-    return {
-      authMethod: AUTHORIZATION[1],
-      token: decrypt(AUTHORIZATION[2]),
-      authToken: (auth_token && decrypt(auth_token)) || null,
-    };
+  } catch (e) {
+    return next(e);
   }
-  return null;
 };
 
 const isAuth = async (req, res, next) => {
   const logger: Logger = Container.get('logger');
   logger.debug('Verifying JWT Token');
-  const { authMethod, token, authToken } = getTokenFromHeader(req);
+  const { authMethod, token, authToken } = getTokenFromHeader(req, next);
   try {
     if (authMethod != 'local') {
       const { data } = await axios({

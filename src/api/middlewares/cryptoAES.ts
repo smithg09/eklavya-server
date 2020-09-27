@@ -12,14 +12,17 @@ const CONFIG = {
  *
  */
 export const encrypt = (data: string) => {
-  let iv = crypto.randomBytes(CONFIG.IV_BYTE_LEN);
-  let cipher = crypto.createCipheriv(CONFIG.BLOCK_CIPHER, Buffer.from(CONFIG.ENCRYPTION_KEY), iv);
-  let encrypted = cipher.update(data);
+  try {
+    let iv = crypto.randomBytes(CONFIG.IV_BYTE_LEN);
+    let cipher = crypto.createCipheriv(CONFIG.BLOCK_CIPHER, Buffer.from(CONFIG.ENCRYPTION_KEY), iv);
+    let encrypted = cipher.update(data);
 
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
+    encrypted = Buffer.concat([encrypted, cipher.final()]);
 
-  return iv.toString('hex') + ':' + encrypted.toString('hex');
-
+    return iv.toString('hex') + ':' + encrypted.toString('hex');
+  } catch {
+    throw new Error('Error Encrypting Token');
+  }
 };
 
 /**
@@ -28,13 +31,17 @@ export const encrypt = (data: string) => {
  *
  */
 export const decrypt = ciphertext => {
-  let dataParts = ciphertext.split(':');
-  let iv = Buffer.from(dataParts.shift(), 'hex');
-  let encryptedText = Buffer.from(dataParts.join(':'), 'hex');
-  let decipher = crypto.createDecipheriv(CONFIG.BLOCK_CIPHER, Buffer.from(CONFIG.ENCRYPTION_KEY), iv);
-  let decrypted = decipher.update(encryptedText);
+  try {
+    let dataParts = ciphertext.split(':');
+    let iv = Buffer.from(dataParts.shift(), 'hex');
+    let encryptedText = Buffer.from(dataParts.join(':'), 'hex');
+    let decipher = crypto.createDecipheriv(CONFIG.BLOCK_CIPHER, Buffer.from(CONFIG.ENCRYPTION_KEY), iv);
+    let decrypted = decipher.update(encryptedText);
 
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
 
-  return decrypted.toString();
+    return decrypted.toString();
+  } catch (e) {
+    return new Error('Error Encrypting Token');
+  }
 };
