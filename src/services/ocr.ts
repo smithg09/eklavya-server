@@ -10,6 +10,15 @@ import tesseract from 'node-tesseract-ocr';
 export default class OCRService {
   public tesseraact_config;
 
+  /**
+   * Steps to process image before applying OCR :   
+   * 1. convert -resize 300% img.png img.png
+   * 2. convert -contrast-stretch 3.55x3.45% img.png img.png
+   * 3. convert [input_file_path] -type Grayscale [output_file_path]
+   * 4. convert [input_file_path] -threshold 60% [output_file_path]
+   * 5. convert [input_file_path] -deskew 90% [output_file_path]
+   */
+
   Logger: Logger;
   constructor() {
     this.Logger = Container.get('logger');
