@@ -16,7 +16,7 @@ export default (app: Router) => {
    */
   app.use('/scrape', middlewares.isAuth, middlewares.attachCurrentUser, route);
 
-  route.get(
+  route.post(
     '/',
     celebrate({
       body: Joi.object({

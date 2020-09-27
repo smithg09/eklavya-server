@@ -19,7 +19,7 @@ export default (app: Router) => {
   app.use('/repositoryData', middlewares.isAuth, route);
 
 
-  route.get('/all', async (req: Request, res: Response, next: NextFunction) => {
+  route.post('/all', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Getting Repository Data');
     try {
@@ -33,7 +33,7 @@ export default (app: Router) => {
     }
   });
 
-  route.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+  route.post('/:id', async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     logger.debug('Getting %o data', req.params.id);
     try {
