@@ -24,7 +24,6 @@ const getTokenFromHeader = (req,next) => {
       if (req.headers.access_token) {
         auth_token = req.headers.access_token;
       }
-      console.log(AUTHORIZATION);
       if (AUTHORIZATION.length < 2) {
         throw new Error('Not Enough values!');
       }
