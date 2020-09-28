@@ -12,6 +12,7 @@ import { IUserInputDTO } from '../../interfaces/IUser';
 import middlewares from '../middlewares';
 import { transformUserData } from '../../helpers/transformUserData';
 import { encrypt, decrypt } from '../middlewares/cryptoAES';
+import path from 'path';
 
 const route = Router();
 
@@ -202,7 +203,7 @@ export default (app: Router) => {
       if (isVerified) {
         const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
         await UserModel.updateOne({ _id: isVerified._id }, { $set: { verified: true } });
-        res.redirect('https://app.eklavya.tech/');
+        res.sendFile(path.join(global.__basedir, 'public', 'verified.html'));
       } else {
         throw new Error('Invalid Token');
       }
