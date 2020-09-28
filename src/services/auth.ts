@@ -88,9 +88,12 @@ export default class AuthService {
     if (userRecord.method === 'OAuth2') {
       throw new Error('Please login using Google');
     }
-    if (!userRecord.verified) {
-      throw new Error('Please Verify your email address');
-    }
+    /**
+      if (!userRecord.verified) {
+        throw new Error('Please Verify your email address');
+      }
+     */
+
     /**
      * We use verify from bcrypt to prevent 'timing based' attacks
      */
