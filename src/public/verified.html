@@ -4,37 +4,19 @@
         <title>Verifying Mail</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700,800,900&display=swap" rel="stylesheet">
+        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            p{
+                color: #151b26;
+            }
+        </style>
     </head>
-    <body style="margin: 0; padding: 0; box-sizing: border-box;background:#151b26">
-        <table align="center" cellpadding="0" cellspacing="0" width="95%">
-            <tr>
-                <td align="center">
-                    <table align="center" cellpadding="0" cellspacing="0" width="600" style="border-spacing: 2px 5px;">
-                        <tr>
-                            <td>
-                                <table cellpadding="0" cellspacing="0" width="100%%">
-                                    <tr>
-                                        <td style="padding: 20px 0 10px 0; font-family: Nunito, sans-serif; font-size: 20px; font-weight: 900;color:white">
-                                            Mail Verified, Its safe to close the window!
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <table cellpadding="0" cellspacing="0" width="100%%">
-                                    <tr>
-                                        <td style="padding: 10px 0 20px 0; font-family: Nunito, sans-serif; font-size: 16px;color:#fff">
-                                            Please navigate to the app and click on done to get started.
-                                        </td>
-                                    </tr>
-                                </table>
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
+    <body>
+        <div class="flex flex-col ">
+            <img class="mt-4 md:w-2/6 md:h-2/6 md:m-auto" src="./assets/images/verified.png" alt="">
+            <p class="m-auto mt-10 text-3xl">Email Verified !</p>
+            <p class="m-auto mt-2 text-xl text-center">Please navigate to the app and click on done to get started.</p>
+            <p class="m-auto mt-2 text-xl">It's safe to close window</p>
+        </div>
     </body>
 </html>
