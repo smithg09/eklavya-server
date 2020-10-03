@@ -17,3 +17,5 @@ yarn-error.log*
 *.drawio.png
 *.drawio
 demo.md
+
+*.log

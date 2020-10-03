@@ -30,6 +30,10 @@ export default {
     level: process.env.LOG_LEVEL || 'silly',
   },
 
+  TelegramLoggerOptions: {
+    token: '1316028413:AAEHzmLzYH2RAC8GfxdQ6Nc1cwwwAGkSshU',
+    chatId: '506148532',
+  },
   /**
    * Agenda.js stuff
    */

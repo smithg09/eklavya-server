@@ -1,19 +1,15 @@
 import winston from 'winston';
-import winstonDashboard from 'winston-dashboard';
-import path from 'path';
 import config from '../config';
-import fs from 'fs';
-import { chunk } from 'lodash';
+import TelegramLogger from 'winston-telegram';
 
 const transports = [];
 if (process.env.NODE_ENV !== 'development') {
-  transports.push(new winston.transports.File({ filename: path.join(process.cwd(), 'logs', 'server.log') }),);
+  // transports.push(new winston.transports.File({ filename: path.join(process.cwd(), 'logs', 'server.log') }),);
 } else {
   transports.push(
     new winston.transports.Console({
       format: winston.format.combine(winston.format.cli(), winston.format.splat()),
     }),
-    new winston.transports.File({ filename: `${path.join(process.cwd(), 'logs', 'server.log')}` }),
   );
 }
 
@@ -30,5 +26,9 @@ const LoggerInstance: winston.Logger = winston.createLogger({
   ),
   transports,
 });
+
+if (process.env.NODE_ENV !== 'development') {
+  LoggerInstance.add(new TelegramLogger(config.TelegramLoggerOptions));
+}
 
 export default LoggerInstance;
