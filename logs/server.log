@@ -1,0 +1,14 @@
+{"message":"✌️ DB loaded and connected!","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ GoogleApis loaded","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ Agenda injected into container","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ Dependency Injector loaded","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ Jobs loaded","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ Express loaded","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"\n           ********************************\n           * 🛡️  Server listening on: 4000 *\n           * 🌐 http://localhost:4000     *\n           ********************************\n           ","level":"info","timestamp":"2020-10-03 21:28:39"}
+{"message":"✌️ DB loaded and connected!","level":"info","timestamp":"2020-10-03 21:29:21"}
+{"message":"✌️ GoogleApis loaded","level":"info","timestamp":"2020-10-03 21:29:21"}
+{"message":"✌️ Agenda injected into container","level":"info","timestamp":"2020-10-03 21:29:21"}
+{"message":"✌️ Dependency Injector loaded","level":"info","timestamp":"2020-10-03 21:29:21"}
+{"message":"✌️ Jobs loaded","level":"info","timestamp":"2020-10-03 21:29:21"}
+{"message":"✌️ Express loaded","level":"info","timestamp":"2020-10-03 21:29:22"}
+{"message":"\n           ********************************\n           * 🛡️  Server listening on: 4000 *\n           * 🌐 http://localhost:4000     *\n           ********************************\n           ","level":"info","timestamp":"2020-10-03 21:29:22"}

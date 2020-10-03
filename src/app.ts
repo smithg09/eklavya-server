@@ -5,6 +5,7 @@ import Logger from './loaders/logger';
 
 class BootstrapApp {
   private appModule: express.Application;
+
   constructor() {
     this.appModule = express();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,6 +17,7 @@ class BootstrapApp {
      * @method Preconfig
      **/
     new Promise(resolve => {
+
       /**
        * Import/Export can only be used in 'top-level code'
        * So using good old require statements.
@@ -37,8 +39,9 @@ class BootstrapApp {
            * 🛡️  Server listening on: ${config.port} *
            * 🌐 http://localhost:${config.port}     *
            ********************************
-        `);
+           `);
     });
   }
 }
+
 new BootstrapApp();
