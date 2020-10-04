@@ -23,7 +23,7 @@ if (process.env.NODE_ENV !== 'development') {
 } else {
   transports.push(
     new winston.transports.Console({
-      format: winston.format.combine(winston.format.cli(), winston.format.splat()),
+      format: winston.format.combine(winston.format.cli(), winston.format.colorize(), winston.format.splat()),
     }),
   );
 
