@@ -13,7 +13,7 @@ export default class MailerService {
   }
 
   public async SendWelcomeEmail(email) {
-    this.Logger.debug(`🔥Sending Welcome mail to %o`, email);
+    this.Logger.debug({ message: `🔥Sending Welcome mail to %o`, json: { debug: email } });
     const data = {
       from: 'Eklavya Team <assistance.eklavya@gmail.com>',
       to: email,
@@ -30,7 +30,7 @@ export default class MailerService {
   }
 
   public async SendVerficationEmail(userDetails, token) {
-    this.Logger.debug(`🔥Sending Verification mail to %o`, userDetails.email);
+    this.Logger.debug({ message: `🔥Sending Verification mail to %o`, json: { debug: userDetails.email } });
     const hostUrl = process.env.HOST_URL;
     const verificationUrl = `${hostUrl}/API/auth/verify?token=${token}`;
     const data = {

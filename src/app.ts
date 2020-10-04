@@ -31,15 +31,16 @@ class BootstrapApp {
   private createServer(app: express.Application) {
     app.listen(config.port, (err: string) => {
       if (err) {
-        Logger.error(err);
+        Logger.error({ message: err });
         process.exit(1);
       }
-      Logger.info(`
+      Logger.info({
+        message: `
            ********************************
            * 🛡️  Server listening on: ${config.port} *
            * 🌐 http://localhost:${config.port}     *
            ********************************
-           `);
+           `});
     });
   }
 }

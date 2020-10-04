@@ -8,7 +8,7 @@ import './events';
 
 export default async ({ expressApp }) => {
   const mongoConnection = await mongooseLoader();
-  Logger.info('✌️ DB loaded and connected!');
+  Logger.info({ message: '✌️ DB loaded and connected!' });
 
   /**
    * WTF is going on here?
@@ -34,11 +34,11 @@ export default async ({ expressApp }) => {
     mongoConnection,
     models: [userModel, repositoryModel],
   });
-  Logger.info('✌️ Dependency Injector loaded');
+  Logger.info({ message: '✌️ Dependency Injector loaded' });
 
   await jobsLoader({ agenda });
-  Logger.info('✌️ Jobs loaded');
+  Logger.info({ message: '✌️ Jobs loaded' });
 
   await expressLoader({ app: expressApp });
-  Logger.info('✌️ Express loaded');
+  Logger.info({ message: '✌️ Express loaded' });
 };
