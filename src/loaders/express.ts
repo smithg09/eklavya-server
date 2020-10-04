@@ -3,8 +3,20 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import routes from '../api';
 import config from '../config';
+import swStats from 'swagger-stats';
 
 export default ({ app }: { app: express.Application }) => {
+  app.use(
+    swStats.getMiddleware({
+      name: 'Eklavya Dashboard',
+      uriPath: '/dashboard',
+      authentication: true,
+      onAuthenticate: function(req, username, password) {
+        // simple check for username and password
+        return username === 'admin' && password === 'admin';
+      },
+    }),
+  );
   /**
    * Health Check endpoints
    * @TODO Explain why they are here
