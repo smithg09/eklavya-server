@@ -52,14 +52,6 @@ const isAuth = async (req, res, next) => {
 			}).catch(_e => {
 				throw new Error('Invalid OAuth2 Token');
 			});
-			await axios({
-				url: `https://logs-01.loggly.com/inputs/TOKEN/tag/http/ `,
-				method: 'get',
-				data: data,
-			}).catch(_e => {
-				throw new Error('Invalid OAuth2 Token');
-			});
-
 			if (data) {
 				req.authMethod = authMethod;
 				req.token = token;

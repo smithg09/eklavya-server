@@ -41,12 +41,6 @@ class BootstrapApp {
            ********************************
            `,
 			});
-			console.log(`
-           ********************************
-           * 🛡️  Server listening on: ${config.port} *
-           * 🌐 http://localhost:${config.port}     *
-           ********************************
-           `);
 		});
 	}
 }
