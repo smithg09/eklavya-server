@@ -1,0 +1,84 @@
+{
+  "version": 1,
+  "projects": {
+    "eklavya-backend": {
+      "root": "apps/eklavya-backend",
+      "sourceRoot": "apps/eklavya-backend/src",
+      "projectType": "application",
+      "prefix": "eklavya-backend",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@nrwl/node:build",
+          "options": {
+            "outputPath": "dist",
+            "main": "apps/eklavya-backend/src/main.ts",
+            "tsConfig": "apps/eklavya-backend/tsconfig.app.json",
+            "assets": [
+              "apps/eklavya-backend/src/assets",
+              "apps/eklavya-backend/src/public",
+              "apps/eklavya-backend/src/pyScripts"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/eklavya-backend/src/environments/environment.ts",
+                  "with": "apps/eklavya-backend/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "@nrwl/node:execute",
+          "options": {
+            "buildTarget": "eklavya-backend:build"
+          }
+        },
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/eklavya-backend/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/eklavya-backend/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "user": {
+      "root": "libs/user",
+      "sourceRoot": "libs/user/src",
+      "projectType": "library",
+      "schematics": {},
+      "architect": {
+        "lint": {
+          "builder": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/user/**/*.ts"]
+          }
+        },
+        "test": {
+          "builder": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "libs/user/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/node"
+  },
+  "defaultProject": "eklavya-backend"
+}
