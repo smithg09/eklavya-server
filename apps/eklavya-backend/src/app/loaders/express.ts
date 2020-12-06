@@ -44,10 +44,19 @@ export default ({ app }: { app: express.Application }) => {
 	// Load API routes
   app.use(environment.api.prefix_v1, new MasterRouter().router);
 
+  app.get('*', (_req, res) => {
+    console.log(__dirname)
+    res.sendFile(path.join(__dirname, 'documentation', 'documentation.html'), (err) => {
+      if (err) {
+        res.redirect('https://documenter.getpostman.com/view/9636093/TVmQdvn2');
+      }
+    });
+  });
+
 	/// catch 404 and forward to error handler
 	app.use((_req, _res, next) => {
-		const err = new Error('Not Found');
-		err['status'] = 404;
+    const err = new Error('Not Found');
+    err['status'] = 404;
 		next(err);
   });
 
@@ -62,7 +71,7 @@ export default ({ app }: { app: express.Application }) => {
     if (err.name === 'UnauthorizedError') {
       return res
       .status(err.status)
-      .send({ message: err.message })
+        .send({ message: err.message, documentation: process.env.HOST_URL })
       .end();
 		}
 		return next(err);
@@ -72,8 +81,9 @@ export default ({ app }: { app: express.Application }) => {
 		res.status(err.status || 500);
 		res.json({
 			errors: {
-				message: err.message,
+        message: err.message,
+        documentation: process.env.HOST_URL,
 			},
 		});
-	});
+  });
 };

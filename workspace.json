@@ -17,7 +17,8 @@
             "assets": [
               "apps/eklavya-backend/src/assets",
               "apps/eklavya-backend/src/public",
-              "apps/eklavya-backend/src/pyScripts"
+              "apps/eklavya-backend/src/pyScripts",
+              "apps/eklavya-backend/src/documentation"
             ]
           },
           "configurations": {
