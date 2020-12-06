@@ -1,8 +1,4 @@
 import * as dotenv from 'dotenv';
-const envFound = dotenv.config();
-if (envFound.error) {
-  throw new Error(envFound.error.toString())
-}
 
 export const environment = {
   production: true,
