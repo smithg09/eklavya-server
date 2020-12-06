@@ -13,7 +13,7 @@
     This project is hosted on heroku at <a href="https://eklavya-server.herokuapp.com/API/documentation" target="_blank"> <b>eklavya-server.herokuapp.com/</b> </a>.
     <br />
     <br />
-    <a href="https://documenter.getpostman.com/view/9636093/T1LJjo6Y?version=latest">📝 API Documentation</a>
+    <a href="https://eklavya-server.herokuapp.com/">📝 API Documentation</a>
   </p>
 </p>
 
