@@ -179,7 +179,7 @@ export default class AuthService {
           department: null,
           course:null,
           role: checkIfFacultyMail ? 'faculty' : 'student',
-					verified: false,
+					verified: true,
           profileCompletion:false,
           lastLogin: null,
           salt: null,
@@ -188,7 +188,7 @@ export default class AuthService {
 				if (!userRecord) {
 					throw new Error('User cannot be created');
 				}
-				await this.mailer.SendWelcomeEmail(userRecord.email,userRecord.name);
+				// await this.mailer.SendWelcomeEmail(userRecord.email,userRecord.name);
 				this.eventDispatcher.dispatch(events.user.signUp, { user: userRecord });
 
 				return {
@@ -198,6 +198,7 @@ export default class AuthService {
 				};
 			}
 		} catch (e) {
+			console.log(e);
 			if (e.message.split(' ').includes('Local', 'User', 'Exists')) {
 				throw new Error('You are not registered using google, Please login using password!');
 			} else {
