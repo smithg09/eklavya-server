@@ -30,7 +30,7 @@ export default class OCRService {
 
   public async recognizetext(img_src) {
     try {
-      if (process.env.NODE_ENV != 'production') {
+      if (process.env.NODE_ENV == 'production') {
         const worker = createWorker({
           logger: m => console.log(m),
         });
