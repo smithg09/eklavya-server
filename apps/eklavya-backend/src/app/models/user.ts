@@ -60,12 +60,19 @@ const User = new mongoose.Schema(
 		department: {
 			type: String,
 			default: null,
+    },
+
+		rollNo: {
+			type: Number,
+			default: null,
 		},
 
 		course: {
 			type: String,
 			default: null,
-		},
+    },
+
+    organization: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization', default: null },
 
 		role: {
 			type: String,

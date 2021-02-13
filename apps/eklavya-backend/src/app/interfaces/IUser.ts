@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { User } from '@eklavya/user';
-
+import { IOrganization } from './IOrganization'
 export interface IUser {
   _id: string;
   method: string;
@@ -14,7 +12,9 @@ export interface IUser {
   uid: number;
   semester: number;
   department: string;
+  rollNo: number;
   course: string;
+  organization: IOrganization;
   role: string;
   verified: boolean;
   profileCompletion: boolean;

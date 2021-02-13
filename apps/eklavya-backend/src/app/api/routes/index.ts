@@ -2,11 +2,13 @@ import auth from './auth';
 import agendash from './agendash';
 import classroom from './classroom';
 import questgen from './questgen';
+import proctoredTest from './ProctoredTest'
 import { Router, Request, Response } from 'express';
 
 export default (app: Router) => {
 	auth(app);
 	questgen(app);
+  proctoredTest(app);
 	agendash(app);
   classroom(app);
 

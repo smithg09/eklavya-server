@@ -5,6 +5,7 @@
     "engines": {
         "node": "12.x"
     },
+    "main": "dist/main.js",
     "scripts": {
         "nx": "nx",
         "serve": "nx serve",
@@ -55,7 +56,7 @@
         "jsonwebtoken": "^8.2.0",
         "lodash": "^4.17.19",
         "method-override": "^3.0.0",
-        "moment": "^2.23.0",
+        "moment": "^2.29.1",
         "moment-timezone": "^0.5.23",
         "mongoose": "^5.7.5",
         "mongoose-beautiful-unique-validation": "^7.1.1",

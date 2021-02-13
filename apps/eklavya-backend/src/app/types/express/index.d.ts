@@ -14,5 +14,6 @@ declare global {
 	namespace Models {
 		export type UserModel = Model<IUser & Document>;
 		export type RepositoryModel = Model<IRepository & Document>;
+		export type RepositoryModelArray = Model<IRepository[]>;
 	}
 }

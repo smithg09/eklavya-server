@@ -44,14 +44,14 @@ export default ({ app }: { app: express.Application }) => {
 	// Load API routes
   app.use(environment.api.prefix_v1, new MasterRouter().router);
 
-  app.get('*', (_req, res) => {
-    console.log(__dirname)
-    res.sendFile(path.join(__dirname, 'documentation', 'documentation.html'), (err) => {
-      if (err) {
-        res.redirect('https://documenter.getpostman.com/view/9636093/TVmQdvn2');
-      }
-    });
-  });
+  // app.get('*', (_req, res) => {
+  //   console.log(__dirname)
+  //   res.sendFile(path.join(__dirname, 'documentation', 'documentation.html'), (err) => {
+  //     if (err) {
+  //       res.redirect('https://documenter.getpostman.com/view/9636093/TVmQdvn2');
+  //     }
+  //   });
+  // });
 
 	/// catch 404 and forward to error handler
 	app.use((_req, _res, next) => {

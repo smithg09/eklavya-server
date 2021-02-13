@@ -33,11 +33,25 @@ const Repository = new mongoose.Schema(
 		options: {
 			type: [String],
 			required: true,
-		},
+    },
+
 		answer: {
 			type: [String],
 			required: true,
-		},
+    },
+
+    weightage: {
+      type: Number,
+      default: 0
+    },
+
+    subjects: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Subjects', default: null }],
+
+    flagged: {
+      type: Boolean,
+			default: false
+    },
+
 		type: {
 			type: String,
 			enum: ['MCR', 'MCCB', 'LA', 'DD', 'FU'],

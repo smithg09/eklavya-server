@@ -1,0 +1,50 @@
+import { IForms } from './../../../interfaces/IForms';
+import { Router, Request, Response, NextFunction } from 'express';
+import { Logger } from 'winston';
+import { Container } from 'typedi';
+import mongoose from 'mongoose';
+// import middlewares from '../../middlewares';
+import RepositoryService from '../../../services/repository';
+
+const route = Router();
+
+export default (app: Router) => {
+  app.use('/proctored/forms', route);
+
+  route.post('/', async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Fetch All Classrooms');
+    try {
+      const repositoryServiceInstance = Container.get(RepositoryService);
+      const ids = await repositoryServiceInstance.StoreRepositories(req.body, 'local');
+      const FormsModel = Container.get('formsModel') as mongoose.Model<IForms & mongoose.Document>;
+      const FormsReponse = await FormsModel.create({
+        title: req.body.title,
+        description: req.body.description,
+        content: ids || [],
+        attempts: req.body.attempts || 1,
+        users: req.body.users || [],
+        class: req.body.class || [],
+        duration: req.body.duration,
+        visibility: req.body.visibility || false,
+        view_count: req.body.view_count || 0,
+        results: null,
+        schedule: {
+          startTimeStamp: req.body.schedule.startTimeStamp,
+          endTimeStamp: req.body.schedule.startTimeStamp
+        },
+      })
+
+
+      if (!FormsReponse) {
+        throw new Error('Form cannot be created');
+      }
+
+      const response = await FormsModel.findById(FormsReponse._id).populate('content')
+      res.json(response).status(200);
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+};

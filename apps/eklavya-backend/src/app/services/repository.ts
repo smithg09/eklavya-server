@@ -1,5 +1,5 @@
+import { IRepository } from './../interfaces/IRepository';
 import { Service, Inject } from 'typedi';
-// import { IRepository } from '../interfaces/IRepository';
 import { EventDispatcher, EventDispatcherInterface } from '../decorators/eventDispatcher';
 // import repository from '../models/repository';
 
@@ -135,7 +135,7 @@ export default class RepositoryService {
 		'now',
 	];
 	constructor(
-		@Inject('repositoryModel') private repositoryModel: Models.RepositoryModel,
+		@Inject('repositoryModel') private repositoryModel: Models.RepositoryModelArray,
 		@Inject('logger') private logger,
 		@EventDispatcher() private eventDispatcher: EventDispatcherInterface,
 	) {}
@@ -175,5 +175,38 @@ export default class RepositoryService {
 				throw new Error('Error Saving Repository Data');
 			}
 		}
-	}
+  }
+
+  public async StoreRepositories(repositoryInputDTO, sourceURL) {
+    try {
+      this.logger.silly('Saving Forms Data Into Repositories..');
+      const transformedRepository = repositoryInputDTO.content.map(content => {
+        return {
+          title: repositoryInputDTO.title,
+          keywords: repositoryInputDTO.keywords,
+          source: sourceURL,
+          question: content.question,
+          options: content.options,
+          answer: content.answer,
+          weightage: content.weightage || 0,
+          flagged: content.flagged || false,
+          subjects: content.subject || null,
+        };
+      });
+      const ids = this.repositoryModel.insertMany(transformedRepository).then(res => {
+        return res.map(el => el._id)
+      })
+      if (!ids) {
+        throw new Error('Data cannot be saved');
+      }
+      return ids;
+    } catch (e) {
+      if (e.code === 11000) {
+        return;
+      } else {
+        this.logger.error(e);
+        throw new Error('Error Saving Repository Data');
+      }
+    }
+  }
 }

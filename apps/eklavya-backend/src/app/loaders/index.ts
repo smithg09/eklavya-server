@@ -30,11 +30,26 @@ export default async ({ expressApp }) => {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     model: require('../models/repository').default,
   };
+  const formsModel = {
+    name: 'formsModel',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    model: require('../models/forms').default,
+  };
+  const organizationModel = {
+    name: 'organizationModel',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    model: require('../models/organization').default,
+  };
+  const subjectsModel = {
+    name: 'subjectsModel',
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    model: require('../models/subjects').default,
+  };
 
   // It returns the agenda instance because it's needed in the subsequent loaders
   const { agenda } = await dependencyInjectorLoader({
     mongoConnection,
-    models: [userModel, repositoryModel],
+    models: [userModel, repositoryModel, formsModel, organizationModel, subjectsModel],
   });
   Logger.info('✌️ Dependency Injector loaded');
 
