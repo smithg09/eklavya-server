@@ -20,6 +20,8 @@ const Forms = new mongoose.Schema(
 
     users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }],
 
+    owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+
     class: {
       type: [String],
       unique: true,
@@ -52,6 +54,7 @@ const Forms = new mongoose.Schema(
       type: [String],
       default: null
     },
+
 
     schedule: {
       startTimeStamp: {

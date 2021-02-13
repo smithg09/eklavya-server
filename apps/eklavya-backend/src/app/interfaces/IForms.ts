@@ -9,6 +9,7 @@ export interface IForms {
   visibility: boolean;
   view_count: number;
   results: string;
+  owner: string;
   schedule: {
     startTimeStamp: Date;
     endTimeStamp: Date;
