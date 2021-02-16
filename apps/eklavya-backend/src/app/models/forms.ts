@@ -18,7 +18,10 @@ const Forms = new mongoose.Schema(
 
     content: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Repository', default: null}],
 
-    users: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null }],
+    users: {
+      type: [String],
+      default: null
+    },
 
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 
