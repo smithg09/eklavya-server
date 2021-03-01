@@ -61,7 +61,7 @@ export default (app: Router) => {
         results: null,
         schedule: {
           startTimeStamp: req.body.schedule.startTimeStamp,
-          endTimeStamp: req.body.schedule.startTimeStamp
+          endTimeStamp: req.body.schedule.endTimeStamp
         },
       })
 
