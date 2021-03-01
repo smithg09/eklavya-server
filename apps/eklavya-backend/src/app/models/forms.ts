@@ -27,7 +27,6 @@ const Forms = new mongoose.Schema(
 
     class: {
       type: [String],
-      unique: true,
       default: null
     },
 

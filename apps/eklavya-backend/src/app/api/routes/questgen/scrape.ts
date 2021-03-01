@@ -36,7 +36,7 @@ export default (app: Router) => {
         const scrapeServiceInstance = Container.get(ScrapperService);
         const repositoryServiceInstance = Container.get(RepositoryService);
         const data = await scrapeServiceInstance.scrape(req.body.scrapeURL);
-        await repositoryServiceInstance.Store(data, req.body.scrapeURL);
+        // await repositoryServiceInstance.Store(data, req.body.scrapeURL);
         res.status(200).json({
           title: data.title,
           scrappedURL: req.body.scrapeURL,
