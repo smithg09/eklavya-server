@@ -125,6 +125,7 @@ export default (app: Router) => {
             const customQuery = {
               $set: subQuery,
             };
+            console.log({customQuery})
             const patchRes = await UserModel.updateOne({ _id: userId }, customQuery);
             if (patchRes) {
               const userData = await UserModel.findById(userId);
