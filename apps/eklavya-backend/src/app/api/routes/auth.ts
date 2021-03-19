@@ -220,7 +220,18 @@ export default (app: Router) => {
         return next(e);
       }
     },
-  );
+    );
+
+    route.delete('/delete/user', async (req: Request, res: Response, next: NextFunction) => {
+      try {
+      const UserModel = Container.get('userModel') as mongoose.Model<IUser & mongoose.Document>;
+      const userResponse = await UserModel.deleteOne({email: req.body.email})
+      res.json({ message: 'User deleted!', payload: userResponse})
+      
+      } catch (e) {
+        return next(e)
+    }
+  })
 
   /**
    * @TODO Let's leave this as a place holder for now
