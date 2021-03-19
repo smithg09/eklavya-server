@@ -182,7 +182,7 @@ export default class AuthService {
           rollNo: null,
           course: null,
           organization: null,
-          role: checkIfFacultyMail ? 'staff' : 'student',
+          role: null,
 					verified: true,
           profileCompletion:false,
           lastLogin: null,
