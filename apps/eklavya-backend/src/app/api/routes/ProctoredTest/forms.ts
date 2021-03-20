@@ -66,7 +66,7 @@ export default (app: Router) => {
         },
       })
 
-
+      console.log(FormsReponse)
       if (!FormsReponse) {
         throw new Error('Form cannot be created');
       }
