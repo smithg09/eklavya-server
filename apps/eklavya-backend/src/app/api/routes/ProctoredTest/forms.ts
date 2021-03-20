@@ -54,6 +54,7 @@ export default (app: Router) => {
         attempts: req.body.attempts || 1,
         users: req.body.users || [],
         class: req.body.class || [],
+        division: req.body.division || [],
         duration: req.body.duration,
         owner: req.currentUser._id,
         visibility: req.body.visibility || false,

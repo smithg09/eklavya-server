@@ -4,6 +4,7 @@ export interface IForms {
   content: [string];
   users: [string];
   class: [string];
+  division: [string];
   duration: number;
   attempts: number;
   visibility: boolean;

@@ -16,7 +16,7 @@ export default (app: Router) => {
     logger.debug('Fetch All Forms');
     try {
       const FormsModel = Container.get('formsModel') as mongoose.Model<IForms & mongoose.Document>;
-      const response = await FormsModel.find({ $or:[{class:req.currentUser.division},{users:req.currentUser.email}] }).populate('content').populate('owner', { _id: 1, name: 1, email: 1 })
+      const response = await FormsModel.find({ $or:[{division:req.currentUser.division},{users:req.currentUser.email}] }).populate('content').populate('owner', { _id: 1, name: 1, email: 1 })
       res.json(response).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
