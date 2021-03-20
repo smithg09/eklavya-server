@@ -33,10 +33,6 @@ const Forms = new mongoose.Schema(
       type: [String],
       default: null
     },
-    class: {
-      type: [String],
-      default: null
-    },
 
     duration: {
       type: Number,
