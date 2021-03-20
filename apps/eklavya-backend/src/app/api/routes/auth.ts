@@ -122,6 +122,9 @@ export default (app: Router) => {
             await receivedValues.map(patchVal => {
               subQuery[patchVal] = req.body[patchVal];
             });
+            if (req.body.role) {
+              subQuery['role'] = req.body.role;
+            }
             const customQuery = {
               $set: subQuery,
             };
