@@ -12,6 +12,7 @@ import middlewares from '../middlewares';
 import { transformUserData } from '../../helpers/transformUserData';
 import { encrypt } from '../middlewares/cryptoAES';
 import path from 'path';
+import { pubsub } from '../graphql/pubsub'
 
 const route = Router();
 
@@ -65,6 +66,10 @@ export default (app: Router) => {
         const authServiceInstance = Container.get(AuthService);
         const { user, token } = await authServiceInstance.SignIn(email, password);
         const transformedUserData = transformUserData(user);
+        pubsub.publish('LOGIN_UPDATE', {
+          userLoggedIn: {
+          token
+        }});
         return res.status(201).json({ user_data: transformedUserData, token: encrypt(token) });
       } catch (e) {
         logger.error('🔥 error: %o', e);

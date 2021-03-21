@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import _subrouter from './routes';
-
 // guaranteed to get dependencies
 class MasterRouter {
   private _router: Router = Router();
