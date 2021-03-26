@@ -4,8 +4,7 @@ import { Logger } from 'winston';
 import { Container } from 'typedi';
 import mongoose from 'mongoose';
 import middlewares from '../../middlewares';
-import RepositoryService from '../../../services/repository';
-
+import { pubsub } from '../../graphql/pubsub'
 const route = Router();
 
 export default (app: Router) => {
@@ -41,9 +40,25 @@ export default (app: Router) => {
     }
   });
 
+  route.post('/proctoredWarning', middlewares.isAuth, middlewares.attachCurrentUser, async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    try {
+      const FormsModel = Container.get('formsModel') as mongoose.Model<IForms & mongoose.Document>;
+      console.log(req.currentUser)
+      await FormsModel.updateOne({ _id: req.body.formID }, { $push: { proctoredWarnings: { user: req.currentUser._id, warning: req.body.warning } } })
+      const response = await FormsModel.findById(req.body.formID).populate('content').populate('owner', { _id: 1, name: 1, email: 1 }).populate('proctoredWarnings proctoredWarnings.user')
+      pubsub.publish('PROCTORING_WARNING', {
+        proctoredWarning: response
+      });
+      res.json(response).status(200);
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+
   route.post('/submitResult', middlewares.isAuth, middlewares.attachCurrentUser, async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
-    logger.debug('Fetch All Classrooms');
     try {
       res.send('response').status(200);
     } catch (e) {

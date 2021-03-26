@@ -11,7 +11,7 @@ const resolvers = {
       subscribe: () => pubsub.asyncIterator(['LOGIN_UPDATE']),
     },
     proctoredWarning: {
-      subscribe: () => pubsub.asyncIterator(['PROCTORING_UPDATE']),
+      subscribe: () => pubsub.asyncIterator(['PROCTORING_WARNING']),
     },
   }
 };

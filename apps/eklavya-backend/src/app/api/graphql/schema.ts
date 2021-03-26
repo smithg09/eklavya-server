@@ -8,6 +8,11 @@ const typeDefs = gql`
     endTimeStamp: Date
   }
 
+  type PROCTORING_WARNING_TYPE {
+    user: User
+    warning: String
+  }
+
   type Form {
     id: ID!
     title: String
@@ -21,6 +26,7 @@ const typeDefs = gql`
     visibility: Boolean
     view_count: Int
     results: String
+    proctoredWarnings: [PROCTORING_WARNING_TYPE]
     owner: String
   }
 
@@ -51,7 +57,7 @@ const typeDefs = gql`
   
   type Subscription {
     userLoggedIn: userLoggedInType!
-    proctoredWarning: Boolean!
+    proctoredWarning: Form
   }
 `
 

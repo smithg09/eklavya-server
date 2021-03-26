@@ -61,6 +61,10 @@ const Forms = new mongoose.Schema(
       default: null
     },
 
+    proctoredWarnings: [{
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      warning: { type: String, default: null }
+    }],
 
     schedule: {
       startTimeStamp: {

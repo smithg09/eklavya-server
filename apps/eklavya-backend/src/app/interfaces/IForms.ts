@@ -10,6 +10,10 @@ export interface IForms {
   visibility: boolean;
   view_count: number;
   results: string;
+  proctoredWarnings: [{
+    user: string,
+    warning: string,
+  }];
   owner: string;
   schedule: {
     startTimeStamp: Date;
