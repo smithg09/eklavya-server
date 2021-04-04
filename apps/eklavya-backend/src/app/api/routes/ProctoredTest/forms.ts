@@ -60,7 +60,7 @@ export default (app: Router) => {
         visibility: req.body.visibility || false,
         view_count: req.body.view_count || 0,
         results: null,
-        proctoredWarnings: null,
+        proctoredWarnings: [],
         schedule: {
           startTimeStamp: req.body.schedule.startTimeStamp,
           endTimeStamp: req.body.schedule.endTimeStamp
