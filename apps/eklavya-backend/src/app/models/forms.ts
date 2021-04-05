@@ -56,10 +56,10 @@ const Forms = new mongoose.Schema(
       default: 0
     },
 
-    results: {
-      type: [String],
-      default: null
-    },
+    results: [{
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      result: [{ contentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Repository' }, isAnswerRight: { type: Boolean } }]
+    }],
 
     proctoredWarnings: [{
       user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

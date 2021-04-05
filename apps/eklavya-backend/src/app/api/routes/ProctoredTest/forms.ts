@@ -59,7 +59,7 @@ export default (app: Router) => {
         owner: req.currentUser._id,
         visibility: req.body.visibility || false,
         view_count: req.body.view_count || 0,
-        results: null,
+        results: [],
         proctoredWarnings: [],
         schedule: {
           startTimeStamp: req.body.schedule.startTimeStamp,

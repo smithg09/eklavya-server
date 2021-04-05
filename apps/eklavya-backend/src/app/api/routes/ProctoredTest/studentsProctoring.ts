@@ -5,6 +5,7 @@ import { Container } from 'typedi';
 import mongoose from 'mongoose';
 import middlewares from '../../middlewares';
 import { pubsub } from '../../graphql/pubsub'
+import { IRepository } from '../../../interfaces/IRepository';
 const route = Router();
 
 export default (app: Router) => {
@@ -60,7 +61,21 @@ export default (app: Router) => {
   route.post('/submitResult', middlewares.isAuth, middlewares.attachCurrentUser, async (req: Request, res: Response, next: NextFunction) => {
     const logger: Logger = Container.get('logger');
     try {
-      res.send('response').status(200);
+      const formsModel = Container.get('formsModel') as mongoose.Model<IForms & mongoose.Document>;
+      const studentsResponse = req.body.studentsResponse
+      let resultUpdateArr = [] as unknown as [{ contentId: string, isAnswerRight: boolean }]
+      await studentsResponse.forEach(res => {
+        if (res.availableAnswer.includes(res.selectedAnswer)) {
+          resultUpdateArr.push({ contentId: res.contentId, isAnswerRight: true})
+        } else {
+          resultUpdateArr.push({ contentId: res.contentId, isAnswerRight: false })
+        }
+      });
+      const updateObj:{ user: string, result: [{ contentId: string, isAnswerRight: boolean }]} = { user: req.currentUser._id, result: resultUpdateArr }
+      console.log({ updateObj })
+      await formsModel.updateOne({ _id: req.body.formId }, { $push: { results: updateObj } })
+      const responseBody = await formsModel.findById(req.body.formId).populate('content').populate('owner', { _id: 1, name: 1, email: 1 })
+      await res.status(200).json(responseBody);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);

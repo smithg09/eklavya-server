@@ -9,7 +9,13 @@ export interface IForms {
   attempts: number;
   visibility: boolean;
   view_count: number;
-  results: string;
+  results: [{
+    user: string,
+    result: [{
+      contentId: string,
+      isAnswerRight: boolean
+    }]
+  }];
   proctoredWarnings: [{
     user: string,
     warning: string,

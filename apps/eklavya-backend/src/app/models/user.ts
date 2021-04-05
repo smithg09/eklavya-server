@@ -96,6 +96,35 @@ const User = new mongoose.Schema(
 			default: null,
 		},
 
+		classreport: [
+			{
+				courseId: {
+					type: String,
+					default: null,
+				},
+				courseWorkId: {
+					type: String,
+					default: null,
+				},
+				id: {
+					type: String,
+					default: null,
+				},
+				title: {
+					type: String,
+					default: null,
+				},
+				grades: {
+					type: Number,
+					default: null,
+				},
+				maxGrades: {
+					type: Number,
+					default: null,
+				},
+			},
+		],
+		
 		salt: String,
 	},
 	{ timestamps: true },
