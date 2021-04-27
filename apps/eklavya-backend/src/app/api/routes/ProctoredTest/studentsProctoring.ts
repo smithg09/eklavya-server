@@ -47,7 +47,7 @@ export default (app: Router) => {
       const FormsModel = Container.get('formsModel') as mongoose.Model<IForms & mongoose.Document>;
       console.log(req.currentUser)
       await FormsModel.updateOne({ _id: req.body.formID }, { $push: { proctoredWarnings: { user: req.currentUser._id, warning: req.body.warning } } })
-      const response = await FormsModel.findById(req.body.formID).populate('content').populate('owner', { _id: 1, name: 1, email: 1 }).populate('proctoredWarnings proctoredWarnings.user')
+      const response = await FormsModel.findById(req.body.formID).populate('content').populate('owner', { _id: 1, name: 1, email: 1 }).populate('proctoredWarnings proctoredWarnings.user', { name: 1, email: 1 })
       pubsub.publish('PROCTORING_WARNING', {
         proctoredWarning: response
       });
@@ -74,8 +74,8 @@ export default (app: Router) => {
       const updateObj:{ user: string, result: [{ contentId: string, isAnswerRight: boolean }]} = { user: req.currentUser._id, result: resultUpdateArr }
       console.log({ updateObj })
       await formsModel.updateOne({ _id: req.body.formId }, { $push: { results: updateObj } })
-      const responseBody = await formsModel.findById(req.body.formId).populate('content').populate('owner', { _id: 1, name: 1, email: 1 })
-      await res.status(200).json(responseBody);
+      const responseBody = await formsModel.findById(req.body.formId).populate('content').populate('owner', { _id: 1, name: 1, email: 1 }).populate('results.user', { _id: 1, name: 1, email: 1 }).populate('proctoredWarnings.user', { _id: 1, name: 1, email: 1})
+      await res.json(responseBody);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);
