@@ -19,15 +19,14 @@ export interface IUser {
   verified: boolean;
   profileCompletion: boolean;
   lastLogin: Date;
-  classreport: [
+  classreport:
     {
       courseId: string;
       courseWorkId: string;
       title: string;
       grades: number;
       maxGrades: number;
-    },
-  ];
+    }[];
   salt: string;
 }
 
