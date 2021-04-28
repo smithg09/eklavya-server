@@ -118,7 +118,7 @@ export default (app: Router) => {
         if (req.currentUser.profileCompletion != true) {
           const pendingValues = new Set(
             Object.keys(req.currentUser).filter(
-              El => req.currentUser[El] == null && El != 'lastLogin' && El != 'picture',
+              El => req.currentUser[El] == null && El != 'lastLogin' && El != 'picture' && El != ' classreport',
             ),
           );
           const receivedValues = Object.keys(req.body).filter(El => pendingValues.has(El));
