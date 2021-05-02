@@ -1,5 +1,5 @@
 import { IForms } from './../../../interfaces/IForms';
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response, NextFunction, response } from 'express';
 import { Logger } from 'winston';
 import { Container } from 'typedi';
 import mongoose from 'mongoose';
@@ -34,6 +34,34 @@ export default (app: Router) => {
         throw new Error('No Form Data Found!')
       }
       res.json(response).status(200);
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+
+  route.get('/generateReport/:id', middlewares.isAuth, middlewares.attachCurrentUser, async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Generate Report');
+    try {
+      const FormsModel = Container.get('formsModel') as any;
+      const responseBody = await FormsModel.findById(req.params.id).populate('results.result.contentId', { question: 1 }).populate('owner', { id: 1, name: 1, email: 1 }).populate('results.user', { id: 1, name: 1, email: 1 }).populate('proctoredWarnings.user', { id: 1, name: 1, email: 1 })
+      if (!responseBody) {
+        throw new Error('No Form Data Found!')
+      }
+      let warningsWithUserId = {};
+      responseBody.proctoredWarnings.forEach(el => {
+        const userId = el.user._id
+        if (warningsWithUserId[userId]) {
+          warningsWithUserId[userId].proctoredWarnings.push(el.warning)
+        } else {
+          warningsWithUserId[userId] = { proctoredWarnings: [el.warning] }
+        }
+      })
+      const reports = await responseBody['results'].map(el => {
+        return { userId: el.user._id, name: el.user.name, email: el.user.email, results: el.result, proctoredWarnings: warningsWithUserId[el.user._id].proctoredWarnings}
+      })
+      res.json({ _id: responseBody['_id'], title: responseBody['title'], class: responseBody['class'], division: responseBody['division'], createdAt: responseBody['createdAt'], createdBy: responseBody['owner.email'] ,reports}).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);
