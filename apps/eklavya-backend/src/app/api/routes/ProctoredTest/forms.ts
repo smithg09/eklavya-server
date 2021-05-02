@@ -4,6 +4,7 @@ import { Logger } from 'winston';
 import { Container } from 'typedi';
 import mongoose from 'mongoose';
 import middlewares from '../../middlewares';
+import ScrapperService from '../../../services/scrapper';
 import RepositoryService from '../../../services/repository';
 
 const route = Router();
@@ -34,6 +35,30 @@ export default (app: Router) => {
         throw new Error('No Form Data Found!')
       }
       res.json(response).status(200);
+    } catch (e) {
+      logger.error('🔥 error: %o', e);
+      return next(e);
+    }
+  });
+  route.post('/autoPopulateQuestions', middlewares.isAuth, middlewares.attachCurrentUser, async (req: Request, res: Response, next: NextFunction) => {
+    const logger: Logger = Container.get('logger');
+    logger.debug('Fetch All Classrooms');
+    try {
+      const scrapeServiceInstance = Container.get(ScrapperService);
+      const RepositoryModel = Container.get('repositoryModel') as mongoose.Model<IForms & mongoose.Document>;
+      const response = await RepositoryModel.find({ title: new RegExp(req.body.topic, 'i') }).limit(req.body.questionLimit)
+      if (!response) {
+        throw new Error('No Form Data Found!')
+      }
+      const regExp = new RegExp(req.body.topic, 'i')
+      const allLinks = await scrapeServiceInstance.getAllRelatedLinks('https://www.indiabix.com/');
+      const suggestions = []
+      allLinks.forEach(link => {
+        if (link.title.match(regExp)) {
+          suggestions.push(link.href)
+        }
+      })
+      res.json({ suggestions, questions: response }).status(200);
     } catch (e) {
       logger.error('🔥 error: %o', e);
       return next(e);

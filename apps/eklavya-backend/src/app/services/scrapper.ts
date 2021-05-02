@@ -139,4 +139,20 @@ export default class ScrapperService {
 			throw new Error('Error Scrapping Sanfoundry, Please check the URL!');
 		}
 	}
+
+	public async getAllRelatedLinks(scrapeURL: string) {
+		try {
+			const rawHTMLPage = await axios.get(scrapeURL);
+			const allLinks = []
+			const $ = cheerio.load(rawHTMLPage.data)
+			const links = $('a'); //jquery get all hyperlinks
+			$(links).each(function (i, link) {
+				allLinks.push({ title: $(link).text(), href: $(link).attr('href') });
+			});
+
+			return allLinks;
+		} catch (e) {
+			throw new Error('Error Scrapping Sanfoundry, Please check the URL!');
+		}
+	}
 }
