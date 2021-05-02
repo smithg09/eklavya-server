@@ -55,6 +55,7 @@
         "graphql": "^15.5.0",
         "graphql-yoga": "^1.18.3",
         "install": "^0.13.0",
+        "json2xls": "^0.1.2",
         "jsonwebtoken": "^8.2.0",
         "lodash": "^4.17.19",
         "method-override": "^3.0.0",

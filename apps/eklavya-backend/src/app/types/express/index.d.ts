@@ -9,6 +9,9 @@ declare global {
 			access_token: string;
 			token: string;
 		}
+		export interface Response {
+			xls: any
+		}
 	}
 
 	namespace Models {

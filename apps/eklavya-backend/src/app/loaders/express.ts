@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import json2xls from 'json2xls';
 import MasterRouter from '../api';
 import { environment } from '../../environments/environment';
 import path from 'path';
@@ -39,9 +40,11 @@ export default ({ app }: { app: express.Application }) => {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
   app.use(require('method-override')());
   app.use('/static', express.static(path.join(__dirname ,'public')));
-	// Middleware that transforms the raw string of req.body into json
-	app.use(bodyParser.json());
-	// Load API routes
+  
+  // Middleware that transforms the raw string of req.body into json
+  app.use(bodyParser.json());
+  // Load API routes
+  app.use(json2xls.middleware);
   app.use(environment.api.prefix_v1, new MasterRouter().router);
 
   // app.get('*', (_req, res) => {
